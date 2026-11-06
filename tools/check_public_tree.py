@@ -6,7 +6,7 @@ from pathlib import PurePosixPath
 import re
 import subprocess
 
-ALLOWED_SUFFIXES={'.py','.json','.jsonl','.csv','.md','.txt'}
+ALLOWED_SUFFIXES={'.py','.json','.jsonl','.csv','.md','.txt','.yml','.yaml'}
 ALLOWED_NAMES={'.gitignore','.gitmodules','.gitattributes','LICENSE'}
 ALLOWED_SUBMODULES={'third_party/ndsrecomp'}
 
