@@ -35,6 +35,8 @@ class RetailCodec:
                 self.tokens[text] = bytes([code, 0])
             elif len(text) == 1:
                 self.glyphs[text] = code
+            else:
+                self.tokens[text] = bytes([code])
 
     def token_bytes(self, text):
         if text in self.tokens:
@@ -56,8 +58,10 @@ class RetailCodec:
             match = TOKEN.match(text, pos)
             if match:
                 token = match[0]
-                self.token_bytes(token)  # Reject prose/unknown escapes disguised as controls.
-                size += 2
+                encoded = self.token_bytes(token)
+                size += len(encoded)
+                if len(encoded) == 1:
+                    pages[-1][-1] += self.widths[encoded[0] - 1]
                 controls.append(token)
                 if token == '\\endPage\\' or token == '\\endOption\\':
                     pages.append([0])

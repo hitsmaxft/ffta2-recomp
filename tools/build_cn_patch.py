@@ -5,6 +5,7 @@ import argparse,hashlib,json,struct,sys,re
 from pathlib import Path
 import ndspy.rom
 from bps import build,apply
+from font_raster import retail_layers
 SHA='f9beac8372ec07cd368265289673294d5be73af38935e9c4194f63f2e3735b59'
 ROOT=Path(__file__).resolve().parents[1]
 def u16(b,o=0):return struct.unpack_from('<H',b,o)[0]
@@ -69,7 +70,7 @@ def bdf_glyphs(path,wanted):
     xx=1+dx+x;yy=top+y
     if 0<=xx<16 and 0<=yy<16 and bits&(1<<(total-1-x)):pix[yy][xx]=3
   data=b''.join(struct.pack('<I',sum(v<<(x*2) for x,v in enumerate(row))) for row in pix)
-  found[chr(code)]=data
+  found[chr(code)]=retail_layers(data)
  if set(found)!=set(wanted):raise ValueError('Missing font glyphs: '+repr(set(wanted)-set(found)))
  return found
 

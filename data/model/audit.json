@@ -1,0 +1,7 @@
+{
+  "source_rows": 33198,
+  "unique_text_fragments": 37705,
+  "pre_translation_audit": "passed",
+  "controls_exposed_to_model": false,
+  "manifest_sha256": "cd4395553d02c845cb8a2ed4bdd237bd74dff0217c16da368c2ee57e97e0b5f9"
+}
