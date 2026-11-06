@@ -104,7 +104,9 @@ bool LocalizationStore::reload(const std::filesystem::path& directory,
         }
         if (seen != required_files) throw std::runtime_error("Missing required pack file");
         Reader r{blob}; auto magic = r.take(8);
-        if (std::string(magic.begin(), magic.end()) != "FFTALOC1" || r.u32() != 1)
+        const auto version = r.u32();
+        if (!((std::string(magic.begin(), magic.end()) == "FFTALOC1" && version == 1) ||
+              (std::string(magic.begin(), magic.end()) == "FFTALOC2" && version == 2)))
             throw std::runtime_error("Unsupported host pack format");
         auto text_count = r.u32(), glyph_count = r.u32(), palette_count = r.u32();
         if (text_count > 200000 || glyph_count == 0 || glyph_count > 65536 || palette_count != 5)
@@ -136,6 +138,13 @@ bool LocalizationStore::reload(const std::filesystem::path& directory,
             if (!candidate->glyphs_.emplace(g.codepoint, g).second) throw std::runtime_error("Duplicate Unicode glyph");
         }
         for (auto& palette : candidate->palettes_) for (auto& color : palette) color = r.u16();
+        if (version == 2) {
+            for (auto& point : candidate->retail_cmap_) {
+                point = r.u32();
+                if (point > 0x10ffff || (point >= 0xd800 && point <= 0xdfff))
+                    throw std::runtime_error("Invalid retail character map");
+            }
+        }
         if (r.p != blob.size()) throw std::runtime_error("Trailing host pack bytes");
         static const std::regex token(R"(\\[^\\\r\n]+\\|<unknown:[0-9A-Fa-f]+>)");
         for (const auto& item : candidate->texts_) {

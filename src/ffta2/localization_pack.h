@@ -28,6 +28,8 @@ public:
     const LocalizedText* text_at_rom_offset(uint32_t offset) const;
     const LocalizedGlyph* glyph(uint32_t codepoint) const;
     const std::array<std::array<uint16_t, 16>, 5>& palettes() const { return palettes_; }
+    const std::unordered_map<std::string, LocalizedText>& texts() const { return texts_; }
+    uint32_t retail_codepoint(uint8_t code) const { return code < retail_cmap_.size() ? retail_cmap_[code] : 0; }
     size_t text_count() const { return texts_.size(); }
     size_t glyph_count() const { return glyphs_.size(); }
     const std::string& source_rom_sha256() const { return rom_sha256_; }
@@ -36,6 +38,7 @@ private:
     friend class LocalizationStore;
     std::string rom_sha256_;
     bool verified_ = false;
+    std::array<uint32_t, 169> retail_cmap_{};
     std::unordered_map<std::string, LocalizedText> texts_;
     std::unordered_map<uint32_t, std::string> offsets_;
     std::unordered_map<uint32_t, LocalizedGlyph> glyphs_;

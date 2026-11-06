@@ -42,7 +42,7 @@ std::string localization_info_json() {
     return "{\"enabled\":true,\"integrity_verified\":true,\"texts\":" +
         std::to_string(pack->text_count()) + ",\"glyphs\":" + std::to_string(pack->glyph_count()) +
         ",\"palettes\":5,\"rom_sha256\":" + quote(pack->source_rom_sha256()) +
-        ",\"game_render_hook\":false}";
+        ",\"game_render_hook\":" + std::string(pack->retail_codepoint(1) ? "true" : "false") + "}";
 }
 std::string reload_localization_json() {
     if (pack_directory.empty()) return "{\"error\":\"No --localization pack configured\"}";

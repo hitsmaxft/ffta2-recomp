@@ -20,7 +20,19 @@ def main():
     p.add_argument('--serve', action='store_true', help='Headless diagnostic server instead of SDL window')
     p.add_argument('--port', type=int, default=19979)
     p.add_argument('--save', type=Path, help='Explicit external test save; defaults to no save writes')
+    p.add_argument('--title-assets', type=Path, help='External exact-match title texture package')
+    p.add_argument('--font', choices=('pixel','system'), default='system')
+    p.add_argument('--window-scale', type=int, choices=range(1,9), default=3)
+    p.add_argument('--lcd', type=float, default=0, help='LCD pixel grid strength, 0..1')
+    p.add_argument('--lcd-text', action='store_true', help='Apply LCD grid to native text too')
     a = p.parse_args()
+    if not 0 <= a.lcd <= 1: p.error('--lcd must be 0..1')
+    if a.title_assets:
+        os.environ['FFTA2_TITLE_ASSETS'] = str(a.title_assets.resolve(strict=True))
+    os.environ['FFTA2_FONT'] = a.font
+    os.environ['FFTA2_WINDOW_SCALE'] = str(a.window_scale)
+    os.environ['FFTA2_LCD'] = str(a.lcd)
+    os.environ['FFTA2_LCD_TEXT'] = '1' if a.lcd_text else '0'
     rom = a.rom.resolve(strict=True)
     with rom.open('rb') as stream:
         identity = hashlib.file_digest(stream, 'sha256').hexdigest()

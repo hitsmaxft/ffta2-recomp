@@ -54,14 +54,14 @@ alone does not prove that game text has been replaced on screen.
 The macOS backend accepts `--localization /external/native-localization`.
 It hashes the loaded ROM bytes itself and verifies the entire external pack
 before starting either guest CPU. Startup rejects an invalid package. The
-runtime holds immutable snapshots for future title-owned text/glyph hooks.
+runtime holds immutable snapshots for the title-owned text/glyph hooks.
 `localization_info` and `localization_reload` debug commands expose loaded counts
 and atomically reload the configured directory on the emulation thread. A bad
 reload retains the working pack. No ROM file write or guest-code patch occurs.
 
-The diagnostic response explicitly reports `game_render_hook: false` until
-Unicode layout and actual glyph drawing are connected and gameplay-tested.
-Neither these commands nor a successful load imply Chinese is displayed by the
-game. External subtitles alone are insufficient for this project's goal: native
-font, character-map, advance-width, palette and script-resource overrides must
-reach the actual text rendering path.
+The diagnostic response reports `game_render_hook: true` when the pack supplies
+its validated retail character map. This means the prologue text hook is enabled,
+not that every UI surface is translated. `localization_render_stats` reports
+bound dialogue records, rendered lines, rejected lines and observed untranslated
+SUB-background labels. See [native text presentation](native-text-presentation.md)
+for actual coverage, vector font integration, captures and known snapshot limits.

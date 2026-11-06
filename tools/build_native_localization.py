@@ -129,7 +129,7 @@ def build(args):
     rendered = bdf_glyphs(args.font, set(new))
     for char in new:
         glyphs[char] = (12, rendered[char], 'ofl-bdf', None)
-    blob = bytearray(b'FFTALOC1' + struct.pack('<4I', 1, len(accepted), len(glyphs), 5))
+    blob = bytearray(b'FFTALOC2' + struct.pack('<4I', 2, len(accepted), len(glyphs), 5))
     blob += field(SHA)
     for row, slot, text, source in accepted:
         blob += field(row['id']) + field(text) + field(source) + field(row['status'])
@@ -144,6 +144,12 @@ def build(args):
     # Five complete retail BGR555 palettes, 16 entries each. Pixel indices
     # retain semantic roles 0 transparent / 1 outline / 2 shadow / 3 foreground.
     blob += palette[1:161]
+    cmap = [0] * 169
+    for item in charset['entries']:
+        code = int(item['code_hex'], 16)
+        if 0 < code < len(cmap) and len(item['display']) == 1:
+            cmap[code] = ord(item['display'])
+    blob += struct.pack('<169I', *cmap)
     output.mkdir(parents=True)
     (output / 'localization.bin').write_bytes(blob)
     with (output / 'translations.csv').open('w', encoding='utf-8-sig', newline='') as dest:
@@ -166,7 +172,7 @@ def build(args):
                     translations_sha256=digest(args.translations.read_bytes()),
                     pixel_roles=['transparent', 'outline', 'shadow', 'foreground'],
                     palette_count=5, palette_format='16 BGR555 entries per palette',
-                    rom_modified=False, runtime_format='FFTALOC1',
+                    rom_modified=False, runtime_format='FFTALOC2',
                     files={p.name: dict(sha256=digest(p.read_bytes()), bytes=p.stat().st_size)
                            for p in sorted(output.iterdir())})
     (output / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')

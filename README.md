@@ -11,12 +11,16 @@ verified in DeSmuME. Character naming is unchanged. It is a partial translation.
 See [the test release notes](docs/cn-font-test.md) and GitHub Releases for a ROM-free
 patch. The older 23-glyph single-byte builder remains as a bounded prototype.
 
-The macOS ARM64 backend now builds and reaches the original title screen and
-New Game difficulty selection in a real mixed AOT/Tier3 run. Runtime external
-font/width/palette/text packs load independently of the unchanged ROM. Game text
-rendering hooks are still pending, and fallback coverage is incomplete. See
-[the native backend](docs/macos-native.md) and [external localization](docs/native-localization.md).
-The patch's Chinese gameplay verification still uses an independent emulator oracle.
+The macOS ARM64 backend runs the prologue and enters the first battle through
+mixed AOT/Tier3 execution. External text/font/palette packs leave the ROM unchanged.
+Prologue dialogue uses high-resolution PingFang through CoreText, with optional
+LCD masking and resizable presentation. An external atlas override covers title,
+difficulty and language labels. In-game menu coverage remains incomplete: inventory
+and other SUB-background text still require integration and visual validation.
+See [the native backend](docs/macos-native.md),
+[external localization](docs/native-localization.md), and
+[native text presentation and UI testing](docs/native-text-presentation.md).
+Fallback coverage is incomplete; SDL Metal presentation is not an NDS Metal renderer.
 
 ## Patch application
 

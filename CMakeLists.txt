@@ -31,12 +31,33 @@ add_subdirectory("${CMAKE_BINARY_DIR}/framework/runner" backend)
 set_target_properties(nds_runner PROPERTIES OUTPUT_NAME ffta2-recomp)
 
 target_sources(nds_runner PRIVATE
+    src/host/font_coretext.cpp
+    src/host/text_layer.cpp
+    src/host/display_options.cpp
+    src/ffta2/unicode_layout.cpp
+    src/ffta2/guest_texture.cpp
+    src/ffta2/guest_text.cpp
     src/ffta2/localization_pack.cpp
     src/ffta2/localization_runtime.cpp)
 target_include_directories(nds_runner PRIVATE "${CMAKE_SOURCE_DIR}/src")
 # debug_server.cpp belongs to nds_support and calls the title-owned host API.
 target_include_directories(nds_support PRIVATE "${CMAKE_SOURCE_DIR}/src")
+target_include_directories(nds_armv4t PRIVATE "${CMAKE_SOURCE_DIR}/src")
 add_executable(ffta2_localization_test EXCLUDE_FROM_ALL
     tests/native_localization_test.cpp src/ffta2/localization_pack.cpp)
 target_include_directories(ffta2_localization_test PRIVATE src)
 target_compile_features(ffta2_localization_test PRIVATE cxx_std_17)
+
+target_link_libraries(nds_runner PRIVATE "-framework CoreText" "-framework CoreGraphics" "-framework CoreFoundation")
+
+add_executable(ffta2_unicode_layout_test EXCLUDE_FROM_ALL
+    tests/unicode_layout_test.cpp src/ffta2/unicode_layout.cpp)
+target_include_directories(ffta2_unicode_layout_test PRIVATE src)
+target_compile_features(ffta2_unicode_layout_test PRIVATE cxx_std_17)
+add_executable(ffta2_host_presentation_test EXCLUDE_FROM_ALL
+    tests/host_presentation_test.cpp src/host/font_coretext.cpp
+    src/host/text_layer.cpp src/host/display_options.cpp)
+target_include_directories(ffta2_host_presentation_test PRIVATE src)
+target_compile_features(ffta2_host_presentation_test PRIVATE cxx_std_17)
+target_link_libraries(ffta2_host_presentation_test PRIVATE
+    "-framework CoreText" "-framework CoreGraphics" "-framework CoreFoundation")
