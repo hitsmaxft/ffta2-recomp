@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "catalog_rows": 132792,
+  "language_slot": 0,
+  "slot0_rows": 33198,
+  "planned_accepted_rows": 92,
+  "review_rows": 3569,
+  "untranslated_rows": 29537,
+  "full_translation": false,
+  "runtime_cjk_encoding_verified": false,
+  "files": {
+    "catalog.csv": {
+      "sha256": "36baf69c60121fad47aacb0bd93d1b40b539b88637f0af779dd263d48773584e",
+      "bytes": 24728074
+    },
+    "machine-cn.csv": {
+      "sha256": "308eb1a7c5802a0bdc450444533ec6e8e1d560377a3e903acba9239697a665b2",
+      "bytes": 6195296
+    }
+  }
+}

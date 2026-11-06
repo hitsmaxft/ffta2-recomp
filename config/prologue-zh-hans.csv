@@ -1,0 +1,12 @@
+﻿"id","rom_offset","byte_length","source_sha256","source_text","translation","status","notes"
+"event:0:42:1","0x023B800E","107","b34bd9638095999678ea055a5b97bb739d770a23cb2e78ee6155cfde60165205","","暑假就要到了!
+想想就快乐.\endPage\\end\老师说完,
+我就出去!\var2:00\\end\","translated","Prototype; preserve naming UI"
+"event:0:103:3","0x023B9056","21","ef7bc284e6ee0559e15f4fe764cceeb505298f42cc203dd4975d6b7e07192648","","铃响了!\var2:00\\end\","translated","Prototype; preserve naming UI"
+"event:0:103:4","0x023B906B","23","5f1b6d1d81736e49922567d061916ba0ab54bb811446129ef79ca35ef89536b0","","暑假快乐!\var2:00\\end\","translated","Prototype; preserve naming UI"
+"event:0:103:5","0x023B9082","20","1d71f1a54af7850068d718dc4a8534947ae37d367872befa902b470764e503ba","","下课!\var2:00\\end\","translated","Prototype; preserve naming UI"
+"event:0:103:6","0x023B9096","166","c7365ea4cd25a5a860dbe3cc3c3bcf10617c9509d6038b69439c21e120fef802","","\varA:00\ Clemens,
+你先留下!\endPage\\end\Sorry, but your vacation
+doesn't start quite yet.\endPage\\end\Your friends are going home,
+but you're going straight to
+the library, young man.\var2:00\\end\","translated","Only the first page translated; preserve naming"

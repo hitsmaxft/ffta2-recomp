@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "rom_sha256": "f9beac8372ec07cd368265289673294d5be73af38935e9c4194f63f2e3735b59",
+  "language": 0,
+  "scope": "Opening monologue, three teacher lines, and first page of teacher addressing Luso; naming unchanged",
+  "font": "Fusion Pixel 12px monospaced zh_hans, 2026.10.25, OFL-1.1",
+  "strings": {
+    "event:0:42:1": "暑假就要到了!\n想想就快乐.\\endPage\\\\end\\老师说完,\n我就出去!\\var2:00\\\\end\\",
+    "event:0:103:3": "铃响了!\\var2:00\\\\end\\",
+    "event:0:103:4": "暑假快乐!\\var2:00\\\\end\\",
+    "event:0:103:5": "下课!\\var2:00\\\\end\\",
+    "event:0:103:6": "\\varA:00\\ Clemens,\n你先留下!\\endPage\\\\end\\Sorry, but your vacation\ndoesn't start quite yet.\\endPage\\\\end\\Your friends are going home,\nbut you're going straight to\nthe library, young man.\\var2:00\\\\end\\"
+  }
+}

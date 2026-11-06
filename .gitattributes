@@ -1,0 +1,4 @@
+# Preserve the exact RFC 4180 CSV bytes and BOM recorded in manifests.
+*.csv -text
+# Retail source text contains intentional trailing spaces; keep source identity.
+*.csv -whitespace

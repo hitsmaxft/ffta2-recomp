@@ -1,0 +1,386 @@
+{
+  "menu/font/UseMoji_table.bin": {
+    "offset": 81132228,
+    "size": 272,
+    "char": "m",
+    "char_position": 0,
+    "hash_id": 932,
+    "rom_offset": 82877124,
+    "head_hex": "efbbbf204142434445464748494a4b4c4d4e4f505152535455565758595a6162"
+  },
+  "menu/font/UseMoji_image.bin": {
+    "offset": 81124404,
+    "size": 7824,
+    "hash_id": 419,
+    "rom_offset": 82869300,
+    "head_hex": "a800a2020000a6020000d2020000fe0200002a0300005603000082030000ae03"
+  },
+  "menu/font/FontWidthTable.bin": {
+    "offset": 80853736,
+    "size": 172,
+    "char": "f",
+    "char_position": 5,
+    "hash_id": 248,
+    "rom_offset": 82598632,
+    "head_hex": "a800040505050505050506040506050706060507050506060608060605050504"
+  },
+  "menu/font/fontpalette.bin": {
+    "offset": 81093744,
+    "size": 164,
+    "char": "m",
+    "char_position": 0,
+    "hash_id": 603,
+    "rom_offset": 82838640,
+    "head_hex": "05d13d670c670c5b67d13d8e088e081c3fd13db832d9293100d13db8324d4600"
+  },
+  "system/rom/JD_message_rom_0.idx": {
+    "offset": 44361024,
+    "size": 340,
+    "char": "r",
+    "char_position": 22,
+    "hash_id": 978,
+    "rom_offset": 46105920,
+    "head_hex": "00000000000000d86900006a00382100408b00700f00c09a00388300001e0100"
+  },
+  "system/rom/JD_message_rom_1.idx": {
+    "offset": 44872708,
+    "size": 340,
+    "char": "r",
+    "char_position": 22,
+    "hash_id": 195,
+    "rom_offset": 46617604,
+    "head_hex": "00000000000000b06b00c06b00702200408e00f00e00409d00708600c02301d8"
+  },
+  "system/rom/JD_message_rom_2.idx": {
+    "offset": 50231768,
+    "size": 340,
+    "char": "y",
+    "char_position": 1,
+    "hash_id": 436,
+    "rom_offset": 51976664,
+    "head_hex": "00000000000000986c00c06c00a82100808e00680f00009e00b08b00c0290168"
+  },
+  "system/rom/JD_message_rom_3.idx": {
+    "offset": 50318752,
+    "size": 340,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 677,
+    "rom_offset": 52063648,
+    "head_hex": "00000000000000f86a00006b00102200408d00900f00009d00089200402f0120"
+  },
+  "system/rom/JD_message_0.pak": {
+    "offset": 42887804,
+    "size": 401472,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 496,
+    "rom_offset": 44632700,
+    "head_hex": "0b0305000000701e0000000005000000751e00000000040000007a1e00000000"
+  },
+  "system/rom/JD_message_1.pak": {
+    "offset": 43382632,
+    "size": 467136,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 737,
+    "rom_offset": 45127528,
+    "head_hex": "0b0307000000701e0000000005000000771e00000000040000007c1e00000000"
+  },
+  "system/rom/JD_message_2.pak": {
+    "offset": 43912448,
+    "size": 448576,
+    "char": "2",
+    "char_position": 22,
+    "hash_id": 978,
+    "rom_offset": 45657344,
+    "head_hex": "0b0308000000701e0000000005000000781e00000000040000007d1e00000000"
+  },
+  "system/rom/JD_message_3.pak": {
+    "offset": 44417700,
+    "size": 455008,
+    "char": "3",
+    "char_position": 22,
+    "hash_id": 195,
+    "rom_offset": 46162596,
+    "head_hex": "0b0309000000701e0000000006000000791e00000000040000007f1e00000000"
+  },
+  "event/rom/ev_msg0_rom.idx": {
+    "offset": 64586340,
+    "size": 6708,
+    "char": "e",
+    "char_position": 0,
+    "hash_id": 27,
+    "rom_offset": 66331236,
+    "head_hex": "00000000000000500300500300400100900400182100a82500a00600482c00a8"
+  },
+  "event/rom/ev_msg1_rom.idx": {
+    "offset": 8266248,
+    "size": 6708,
+    "char": "v",
+    "char_position": 1,
+    "hash_id": 764,
+    "rom_offset": 10011144,
+    "head_hex": "00000000000000500300500300400100900400082100982500a00600382c00a8"
+  },
+  "event/rom/ev_msg2_rom.idx": {
+    "offset": 64675192,
+    "size": 6708,
+    "char": "e",
+    "char_position": 0,
+    "hash_id": 477,
+    "rom_offset": 66420088,
+    "head_hex": "00000000000000500300500300400100900400282100b82500a00600582c00a8"
+  },
+  "event/rom/ev_msg3_rom.idx": {
+    "offset": 7535128,
+    "size": 6708,
+    "char": "e",
+    "char_position": 0,
+    "hash_id": 190,
+    "rom_offset": 9280024,
+    "head_hex": "00000000000000500300500300400100900400402100d02500a00600702c00a8"
+  },
+  "event/rom/ev_msg0.pak": {
+    "offset": 35681924,
+    "size": 1219756,
+    "char": "v",
+    "char_position": 1,
+    "hash_id": 369,
+    "rom_offset": 37426820,
+    "head_hex": "15000a000000d400000001000a000000de00000001000a000000e80000000100"
+  },
+  "event/rom/ev_msg1.pak": {
+    "offset": 36992960,
+    "size": 1546224,
+    "char": "v",
+    "char_position": 1,
+    "hash_id": 610,
+    "rom_offset": 38737856,
+    "head_hex": "15000a000000d400000001000a000000de00000001000a000000e80000000100"
+  },
+  "event/rom/ev_msg2.pak": {
+    "offset": 38650112,
+    "size": 1406136,
+    "char": "v",
+    "char_position": 1,
+    "hash_id": 851,
+    "rom_offset": 40395008,
+    "head_hex": "15000a000000d400000001000a000000de00000001000a000000e80000000100"
+  },
+  "event/rom/ev_msg3.pak": {
+    "offset": 40097472,
+    "size": 1292012,
+    "char": "v",
+    "char_position": 1,
+    "hash_id": 68,
+    "rom_offset": 41842368,
+    "head_hex": "15000a000000d400000001000a000000de00000001000a000000e80000000100"
+  },
+  "system/rom/JH_uwasatext_0.pak": {
+    "offset": 8046508,
+    "size": 24288,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 729,
+    "rom_offset": 9791404,
+    "head_hex": "000001001d0100000c00000008001a2a300126292a32012f2320012a271f011e"
+  },
+  "system/rom/JH_uwasatext_1.pak": {
+    "offset": 82657176,
+    "size": 33184,
+    "char": "y",
+    "char_position": 1,
+    "hash_id": 970,
+    "rom_offset": 84402072,
+    "head_hex": "00000100fb0100000c0000000d000b202f352f01281c2701242801062d292e2f"
+  },
+  "system/rom/JH_uwasatext_2.pak": {
+    "offset": 83548560,
+    "size": 26720,
+    "char": "J",
+    "char_position": 11,
+    "hash_id": 187,
+    "rom_offset": 85293456,
+    "head_hex": "00000100550100000c000000090094091c1d56242e012a5a1f2a01231c1d271c"
+  },
+  "system/rom/JH_uwasatext_3.pak": {
+    "offset": 78959020,
+    "size": 24256,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 428,
+    "rom_offset": 80703916,
+    "head_hex": "00000100360100000c0000000a00172a302e011e2a29291c242e2e2035012720"
+  },
+  "system/rom/JH_questtext_0.pak": {
+    "offset": 8083564,
+    "size": 99808,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 74,
+    "rom_offset": 9828460,
+    "head_hex": "00000100020000000c0000000100c10000000000000000000000000000000000"
+  },
+  "system/rom/JH_questtext_1.pak": {
+    "offset": 80451272,
+    "size": 147616,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 315,
+    "rom_offset": 82196168,
+    "head_hex": "000001000a0000000c0000000100160f16140605c900c1000000000000000000"
+  },
+  "system/rom/JH_questtext_2.pak": {
+    "offset": 85955168,
+    "size": 100704,
+    "hash_id": 556,
+    "rom_offset": 87700064,
+    "head_hex": "00000100020000000c0000000100c10000000000000000000000000000000000"
+  },
+  "system/rom/JH_questtext_3.pak": {
+    "offset": 86055872,
+    "size": 106272,
+    "hash_id": 797,
+    "rom_offset": 87800768,
+    "head_hex": "000001000c0000000c00000001000f10150116140605c900c100000000000000"
+  },
+  "system/rom/JH_freepapermes_0.pak": {
+    "offset": 85877588,
+    "size": 76800,
+    "hash_id": 810,
+    "rom_offset": 87622484,
+    "head_hex": "00000100f60100000c0000000d000a29012f2320011f1c2d26011c291f011f24"
+  },
+  "system/rom/JH_freepapermes_1.pak": {
+    "offset": 64593048,
+    "size": 82144,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 27,
+    "rom_offset": 66337944,
+    "head_hex": "00000100480200000c0000000d00172a2d0131242027202901082029202d1c2f"
+  },
+  "system/rom/JH_freepapermes_2.pak": {
+    "offset": 14963156,
+    "size": 78496,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 268,
+    "rom_offset": 16708052,
+    "head_hex": "00000100ab0100000c0000000b000627011564292027011f20010f2035272a30"
+  },
+  "system/rom/JH_freepapermes_3.pak": {
+    "offset": 15167668,
+    "size": 65344,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 509,
+    "rom_offset": 16912564,
+    "head_hex": "00000100e50100000c0000000a000b1c1f242e7e012720012f2a2d2f30203033"
+  },
+  "system/rom/JH_uwasatext_rom_0.idx": {
+    "offset": 52481932,
+    "size": 780,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 811,
+    "rom_offset": 54226828,
+    "head_hex": "00000000000000580200800200b80400400700980200000a00e8050000100028"
+  },
+  "system/rom/JH_uwasatext_rom_1.idx": {
+    "offset": 86162144,
+    "size": 780,
+    "hash_id": 28,
+    "rom_offset": 87907040,
+    "head_hex": "00000000000000180400400400700500c00900100400000e00780a0080180050"
+  },
+  "system/rom/JH_uwasatext_rom_2.idx": {
+    "offset": 82711960,
+    "size": 780,
+    "char": "y",
+    "char_position": 1,
+    "hash_id": 269,
+    "rom_offset": 84456856,
+    "head_hex": "00000000000000c80200000300600400800700a80200400a0098060000110030"
+  },
+  "system/rom/JH_uwasatext_rom_3.idx": {
+    "offset": 81081868,
+    "size": 780,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 510,
+    "rom_offset": 82826764,
+    "head_hex": "00000000000000880200c00200100500000800e00200000b00e0050000110080"
+  },
+  "system/rom/JH_questtext_rom_0.idx": {
+    "offset": 29224044,
+    "size": 3084,
+    "char": "y",
+    "char_position": 1,
+    "hash_id": 652,
+    "rom_offset": 30968940,
+    "head_hex": "00000000000000200000400000c0010000020078010080030060020000060068"
+  },
+  "system/rom/JH_questtext_rom_1.idx": {
+    "offset": 29280904,
+    "size": 3084,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 893,
+    "rom_offset": 31025800,
+    "head_hex": "00000000000000300000400000f80200400300d80400400800f80300400c00f0"
+  },
+  "system/rom/JH_questtext_rom_2.idx": {
+    "offset": 29358612,
+    "size": 3084,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 110,
+    "rom_offset": 31103508,
+    "head_hex": "00000000000000200000400000180200800200580200000500b00200c0070098"
+  },
+  "system/rom/JH_questtext_rom_3.idx": {
+    "offset": 29429808,
+    "size": 3084,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 351,
+    "rom_offset": 31174704,
+    "head_hex": "00000000000000380000400000200200800200180200c00400280200000700a0"
+  },
+  "system/rom/JH_freepapermes_rom_0.idx": {
+    "offset": 53242752,
+    "size": 780,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 876,
+    "rom_offset": 54987648,
+    "head_hex": "00000000000000080400400400d00000400500500300c00800c00200800b0090"
+  },
+  "system/rom/JH_freepapermes_rom_1.idx": {
+    "offset": 798344,
+    "size": 780,
+    "char": "s",
+    "char_position": 0,
+    "hash_id": 93,
+    "rom_offset": 2543240,
+    "head_hex": "00000000000000b00400c00400e00100c00600380400000b00180300400e0038"
+  },
+  "system/rom/JH_freepapermes_rom_2.idx": {
+    "offset": 83682032,
+    "size": 780,
+    "char": "y",
+    "char_position": 1,
+    "hash_id": 334,
+    "rom_offset": 85426928,
+    "head_hex": "00000000000000780300800300080100c00400500200400700580200c0090028"
+  },
+  "system/rom/JH_freepapermes_rom_3.idx": {
+    "offset": 85954388,
+    "size": 780,
+    "hash_id": 575,
+    "rom_offset": 87699284,
+    "head_hex": "00000000000000e80300000400f00000000500180400400900700200c00b00c8"
+  }
+}

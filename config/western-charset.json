@@ -1,0 +1,746 @@
+{
+  "source": "https://github.com/Rurusachi/ffta2-editor/blob/main/src/main/java/org/ruru/ffta2editor/utility/FFTA2Charset.java",
+  "status": "upstream-source-only; not verified against 2381 ROM",
+  "entries": [
+    {
+      "code_hex": "0x00",
+      "display": "\r"
+    },
+    {
+      "code_hex": "0x01",
+      "display": " "
+    },
+    {
+      "code_hex": "0x02",
+      "display": "A"
+    },
+    {
+      "code_hex": "0x03",
+      "display": "B"
+    },
+    {
+      "code_hex": "0x04",
+      "display": "C"
+    },
+    {
+      "code_hex": "0x05",
+      "display": "D"
+    },
+    {
+      "code_hex": "0x06",
+      "display": "E"
+    },
+    {
+      "code_hex": "0x07",
+      "display": "F"
+    },
+    {
+      "code_hex": "0x08",
+      "display": "G"
+    },
+    {
+      "code_hex": "0x09",
+      "display": "H"
+    },
+    {
+      "code_hex": "0x0A",
+      "display": "I"
+    },
+    {
+      "code_hex": "0x0B",
+      "display": "J"
+    },
+    {
+      "code_hex": "0x0C",
+      "display": "K"
+    },
+    {
+      "code_hex": "0x0D",
+      "display": "L"
+    },
+    {
+      "code_hex": "0x0E",
+      "display": "M"
+    },
+    {
+      "code_hex": "0x0F",
+      "display": "N"
+    },
+    {
+      "code_hex": "0x10",
+      "display": "O"
+    },
+    {
+      "code_hex": "0x11",
+      "display": "P"
+    },
+    {
+      "code_hex": "0x12",
+      "display": "Q"
+    },
+    {
+      "code_hex": "0x13",
+      "display": "R"
+    },
+    {
+      "code_hex": "0x14",
+      "display": "S"
+    },
+    {
+      "code_hex": "0x15",
+      "display": "T"
+    },
+    {
+      "code_hex": "0x16",
+      "display": "U"
+    },
+    {
+      "code_hex": "0x17",
+      "display": "V"
+    },
+    {
+      "code_hex": "0x18",
+      "display": "W"
+    },
+    {
+      "code_hex": "0x19",
+      "display": "X"
+    },
+    {
+      "code_hex": "0x1A",
+      "display": "Y"
+    },
+    {
+      "code_hex": "0x1B",
+      "display": "Z"
+    },
+    {
+      "code_hex": "0x1C",
+      "display": "a"
+    },
+    {
+      "code_hex": "0x1D",
+      "display": "b"
+    },
+    {
+      "code_hex": "0x1E",
+      "display": "c"
+    },
+    {
+      "code_hex": "0x1F",
+      "display": "d"
+    },
+    {
+      "code_hex": "0x20",
+      "display": "e"
+    },
+    {
+      "code_hex": "0x21",
+      "display": "f"
+    },
+    {
+      "code_hex": "0x22",
+      "display": "g"
+    },
+    {
+      "code_hex": "0x23",
+      "display": "h"
+    },
+    {
+      "code_hex": "0x24",
+      "display": "i"
+    },
+    {
+      "code_hex": "0x25",
+      "display": "j"
+    },
+    {
+      "code_hex": "0x26",
+      "display": "k"
+    },
+    {
+      "code_hex": "0x27",
+      "display": "l"
+    },
+    {
+      "code_hex": "0x28",
+      "display": "m"
+    },
+    {
+      "code_hex": "0x29",
+      "display": "n"
+    },
+    {
+      "code_hex": "0x2A",
+      "display": "o"
+    },
+    {
+      "code_hex": "0x2B",
+      "display": "p"
+    },
+    {
+      "code_hex": "0x2C",
+      "display": "q"
+    },
+    {
+      "code_hex": "0x2D",
+      "display": "r"
+    },
+    {
+      "code_hex": "0x2E",
+      "display": "s"
+    },
+    {
+      "code_hex": "0x2F",
+      "display": "t"
+    },
+    {
+      "code_hex": "0x30",
+      "display": "u"
+    },
+    {
+      "code_hex": "0x31",
+      "display": "v"
+    },
+    {
+      "code_hex": "0x32",
+      "display": "w"
+    },
+    {
+      "code_hex": "0x33",
+      "display": "x"
+    },
+    {
+      "code_hex": "0x34",
+      "display": "y"
+    },
+    {
+      "code_hex": "0x35",
+      "display": "z"
+    },
+    {
+      "code_hex": "0x36",
+      "display": "À"
+    },
+    {
+      "code_hex": "0x37",
+      "display": "Á"
+    },
+    {
+      "code_hex": "0x38",
+      "display": "Â"
+    },
+    {
+      "code_hex": "0x39",
+      "display": "Ä"
+    },
+    {
+      "code_hex": "0x3A",
+      "display": "Æ"
+    },
+    {
+      "code_hex": "0x3B",
+      "display": "Ç"
+    },
+    {
+      "code_hex": "0x3C",
+      "display": "È"
+    },
+    {
+      "code_hex": "0x3D",
+      "display": "É"
+    },
+    {
+      "code_hex": "0x3E",
+      "display": "Ê"
+    },
+    {
+      "code_hex": "0x3F",
+      "display": "Ë"
+    },
+    {
+      "code_hex": "0x40",
+      "display": "Ì"
+    },
+    {
+      "code_hex": "0x41",
+      "display": "Í"
+    },
+    {
+      "code_hex": "0x42",
+      "display": "Î"
+    },
+    {
+      "code_hex": "0x43",
+      "display": "Ï"
+    },
+    {
+      "code_hex": "0x44",
+      "display": "Ñ"
+    },
+    {
+      "code_hex": "0x45",
+      "display": "Ò"
+    },
+    {
+      "code_hex": "0x46",
+      "display": "Ó"
+    },
+    {
+      "code_hex": "0x47",
+      "display": "Ô"
+    },
+    {
+      "code_hex": "0x48",
+      "display": "Ö"
+    },
+    {
+      "code_hex": "0x49",
+      "display": "Œ"
+    },
+    {
+      "code_hex": "0x4A",
+      "display": "Ù"
+    },
+    {
+      "code_hex": "0x4B",
+      "display": "Ú"
+    },
+    {
+      "code_hex": "0x4C",
+      "display": "Û"
+    },
+    {
+      "code_hex": "0x4D",
+      "display": "Ü"
+    },
+    {
+      "code_hex": "0x4E",
+      "display": "ß"
+    },
+    {
+      "code_hex": "0x4F",
+      "display": "à"
+    },
+    {
+      "code_hex": "0x50",
+      "display": "á"
+    },
+    {
+      "code_hex": "0x51",
+      "display": "â"
+    },
+    {
+      "code_hex": "0x52",
+      "display": "ä"
+    },
+    {
+      "code_hex": "0x53",
+      "display": "æ"
+    },
+    {
+      "code_hex": "0x54",
+      "display": "ç"
+    },
+    {
+      "code_hex": "0x55",
+      "display": "è"
+    },
+    {
+      "code_hex": "0x56",
+      "display": "é"
+    },
+    {
+      "code_hex": "0x57",
+      "display": "ê"
+    },
+    {
+      "code_hex": "0x58",
+      "display": "ë"
+    },
+    {
+      "code_hex": "0x59",
+      "display": "ì"
+    },
+    {
+      "code_hex": "0x5A",
+      "display": "í"
+    },
+    {
+      "code_hex": "0x5B",
+      "display": "î"
+    },
+    {
+      "code_hex": "0x5C",
+      "display": "ï"
+    },
+    {
+      "code_hex": "0x5D",
+      "display": "ñ"
+    },
+    {
+      "code_hex": "0x5E",
+      "display": "ò"
+    },
+    {
+      "code_hex": "0x5F",
+      "display": "ó"
+    },
+    {
+      "code_hex": "0x60",
+      "display": "ô"
+    },
+    {
+      "code_hex": "0x61",
+      "display": "ö"
+    },
+    {
+      "code_hex": "0x62",
+      "display": "œ"
+    },
+    {
+      "code_hex": "0x63",
+      "display": "ù"
+    },
+    {
+      "code_hex": "0x64",
+      "display": "ú"
+    },
+    {
+      "code_hex": "0x65",
+      "display": "û"
+    },
+    {
+      "code_hex": "0x66",
+      "display": "ü"
+    },
+    {
+      "code_hex": "0x67",
+      "display": "0"
+    },
+    {
+      "code_hex": "0x68",
+      "display": "1"
+    },
+    {
+      "code_hex": "0x69",
+      "display": "2"
+    },
+    {
+      "code_hex": "0x6A",
+      "display": "3"
+    },
+    {
+      "code_hex": "0x6B",
+      "display": "4"
+    },
+    {
+      "code_hex": "0x6C",
+      "display": "5"
+    },
+    {
+      "code_hex": "0x6D",
+      "display": "6"
+    },
+    {
+      "code_hex": "0x6E",
+      "display": "7"
+    },
+    {
+      "code_hex": "0x6F",
+      "display": "8"
+    },
+    {
+      "code_hex": "0x70",
+      "display": "9"
+    },
+    {
+      "code_hex": "0x71",
+      "display": "~"
+    },
+    {
+      "code_hex": "0x72",
+      "display": "`"
+    },
+    {
+      "code_hex": "0x73",
+      "display": "!"
+    },
+    {
+      "code_hex": "0x74",
+      "display": "?"
+    },
+    {
+      "code_hex": "0x75",
+      "display": "#"
+    },
+    {
+      "code_hex": "0x76",
+      "display": "%"
+    },
+    {
+      "code_hex": "0x77",
+      "display": "^"
+    },
+    {
+      "code_hex": "0x78",
+      "display": "&"
+    },
+    {
+      "code_hex": "0x79",
+      "display": "*"
+    },
+    {
+      "code_hex": "0x7A",
+      "display": "/"
+    },
+    {
+      "code_hex": "0x7B",
+      "display": "_"
+    },
+    {
+      "code_hex": "0x7C",
+      "display": "+"
+    },
+    {
+      "code_hex": "0x7D",
+      "display": "="
+    },
+    {
+      "code_hex": "0x7E",
+      "display": ","
+    },
+    {
+      "code_hex": "0x7F",
+      "display": "."
+    },
+    {
+      "code_hex": "0x80",
+      "display": ";"
+    },
+    {
+      "code_hex": "0x81",
+      "display": ":"
+    },
+    {
+      "code_hex": "0x82",
+      "display": "¥"
+    },
+    {
+      "code_hex": "0x83",
+      "display": "'"
+    },
+    {
+      "code_hex": "0x84",
+      "display": "\""
+    },
+    {
+      "code_hex": "0x85",
+      "display": "„"
+    },
+    {
+      "code_hex": "0x86",
+      "display": "("
+    },
+    {
+      "code_hex": "0x87",
+      "display": ")"
+    },
+    {
+      "code_hex": "0x88",
+      "display": "["
+    },
+    {
+      "code_hex": "0x89",
+      "display": "]"
+    },
+    {
+      "code_hex": "0x8A",
+      "display": "{"
+    },
+    {
+      "code_hex": "0x8B",
+      "display": "}"
+    },
+    {
+      "code_hex": "0x8C",
+      "display": "|"
+    },
+    {
+      "code_hex": "0x8D",
+      "display": "-"
+    },
+    {
+      "code_hex": "0x8E",
+      "display": "ー"
+    },
+    {
+      "code_hex": "0x8F",
+      "display": "—"
+    },
+    {
+      "code_hex": "0x90",
+      "display": "«"
+    },
+    {
+      "code_hex": "0x91",
+      "display": "»"
+    },
+    {
+      "code_hex": "0x92",
+      "display": "·"
+    },
+    {
+      "code_hex": "0x93",
+      "display": "¡"
+    },
+    {
+      "code_hex": "0x94",
+      "display": "¿"
+    },
+    {
+      "code_hex": "0x95",
+      "display": "°"
+    },
+    {
+      "code_hex": "0x96",
+      "display": "\\squareleft\\"
+    },
+    {
+      "code_hex": "0x97",
+      "display": "\\squareright\\"
+    },
+    {
+      "code_hex": "0x98",
+      "display": "♪"
+    },
+    {
+      "code_hex": "0x99",
+      "display": "↓"
+    },
+    {
+      "code_hex": "0x9A",
+      "display": "←"
+    },
+    {
+      "code_hex": "0x9B",
+      "display": "↑"
+    },
+    {
+      "code_hex": "0x9C",
+      "display": "→"
+    },
+    {
+      "code_hex": "0x9D",
+      "display": "™"
+    },
+    {
+      "code_hex": "0x9E",
+      "display": "®"
+    },
+    {
+      "code_hex": "0x9F",
+      "display": "©"
+    },
+    {
+      "code_hex": "0xA0",
+      "display": "\\small2\\"
+    },
+    {
+      "code_hex": "0xA1",
+      "display": "\\small3\\"
+    },
+    {
+      "code_hex": "0xA2",
+      "display": "\\small4\\"
+    },
+    {
+      "code_hex": "0xA3",
+      "display": "\\small5\\"
+    },
+    {
+      "code_hex": "0xA4",
+      "display": "<"
+    },
+    {
+      "code_hex": "0xA5",
+      "display": ">"
+    },
+    {
+      "code_hex": "0xA6",
+      "display": "≠"
+    },
+    {
+      "code_hex": "0xA7",
+      "display": "≤"
+    },
+    {
+      "code_hex": "0xA8",
+      "display": "≥"
+    },
+    {
+      "code_hex": "0xC000",
+      "display": "\n"
+    },
+    {
+      "code_hex": "0xC1",
+      "display": "\\end\\"
+    },
+    {
+      "code_hex": "0xC2",
+      "display": "\\var2:%02X\\"
+    },
+    {
+      "code_hex": "0xC300",
+      "display": "\\endPage\\"
+    },
+    {
+      "code_hex": "0xC4",
+      "display": "\\var4:%02X\\"
+    },
+    {
+      "code_hex": "0xC5",
+      "display": "\\var5:%02X\\"
+    },
+    {
+      "code_hex": "0xC6",
+      "display": "\\var6:%02X\\"
+    },
+    {
+      "code_hex": "0xC7",
+      "display": "\\defaultOption:%02X\\"
+    },
+    {
+      "code_hex": "0xC800",
+      "display": "\\endOption\\"
+    },
+    {
+      "code_hex": "0xC9",
+      "display": "\\var9:%02X\\"
+    },
+    {
+      "code_hex": "0xCA",
+      "display": "\\varA:%02X\\"
+    },
+    {
+      "code_hex": "0xCB",
+      "display": "\\sprite:%02X\\"
+    },
+    {
+      "code_hex": "0xCC",
+      "display": "\\varC:%02X\\"
+    },
+    {
+      "code_hex": "0xCD",
+      "display": "\\varD:%02X\\"
+    },
+    {
+      "code_hex": "0xCE",
+      "display": "\\varE:%02X\\"
+    },
+    {
+      "code_hex": "0xCF",
+      "display": "\\varF:%02X\\"
+    }
+  ]
+}

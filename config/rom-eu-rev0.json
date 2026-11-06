@@ -1,0 +1,10 @@
+{
+  "title": "FFTA2-EU",
+  "gamecode": "A6FP",
+  "revision": 0,
+  "size": 134217728,
+  "sha256": "f9beac8372ec07cd368265289673294d5be73af38935e9c4194f63f2e3735b59",
+  "sha1": "09a4a90eb05d187e7cd896497866d58da36353b0",
+  "arm9_rom_offset": 16384,
+  "arm9_ram_address": 33554432
+}
