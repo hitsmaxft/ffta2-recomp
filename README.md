@@ -11,9 +11,12 @@ verified in DeSmuME. Character naming is unchanged. It is a partial translation.
 See [the test release notes](docs/cn-font-test.md) and GitHub Releases for a ROM-free
 patch. The older 23-glyph single-byte builder remains as a bounded prototype.
 
-MacOS native gameplay and runtime Unicode replacement remain development goals;
-the current game verification uses an independent emulator oracle. The pinned
-ARMv5TE recompiler tool builds on macOS arm64.
+The macOS ARM64 backend now builds and reaches the original title screen and
+New Game difficulty selection in a real mixed AOT/Tier3 run. Runtime external
+font/width/palette/text packs load independently of the unchanged ROM. Game text
+rendering hooks are still pending, and fallback coverage is incomplete. See
+[the native backend](docs/macos-native.md) and [external localization](docs/native-localization.md).
+The patch's Chinese gameplay verification still uses an independent emulator oracle.
 
 ## Patch application
 

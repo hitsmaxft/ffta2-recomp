@@ -1,0 +1,23 @@
+[
+  {
+    "fragment_id": "t-25e3d225420869d9",
+    "source": "together.",
+    "affected_ids": [
+      "event:0:139:74",
+      "event:0:161:8"
+    ],
+    "issue": "Same English fragment belongs to different cross-line expressions: come together versus get-together.",
+    "resolution": "event:0:161:8 uses an ID-specific translation; original controls preserved."
+  },
+  {
+    "fragment_id": "t-3608af003e753afe",
+    "source": "Clan ",
+    "affected_ids": [
+      "event:0:161:50",
+      "event:0:161:69",
+      "event:0:161:74"
+    ],
+    "issue": "Chinese placement of the clan label varies with the full sentence.",
+    "resolution": "event:0:161:69 uses an ID-specific translation; other rows remain review."
+  }
+]

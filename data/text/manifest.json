@@ -4,8 +4,8 @@
   "language_slot": 0,
   "slot0_rows": 33198,
   "planned_accepted_rows": 92,
-  "review_rows": 9658,
-  "untranslated_rows": 23448,
+  "review_rows": 10473,
+  "untranslated_rows": 22633,
   "full_translation": false,
   "runtime_cjk_encoding_verified": false,
   "excluded_naming_rows": 350,
@@ -15,8 +15,8 @@
       "bytes": 24728074
     },
     "machine-cn.csv": {
-      "sha256": "58f1c29e9d65b78ee0213c25d4a2bcac611b822fc58402c3131a06f807cfa72a",
-      "bytes": 6918763
+      "sha256": "d61845febed38fefb0bed53436f36a847cf19a7422cb5433d9c4e5844042e0de",
+      "bytes": 7022353
     }
   }
 }

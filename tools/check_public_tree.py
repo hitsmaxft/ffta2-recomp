@@ -6,9 +6,9 @@ from pathlib import PurePosixPath
 import re
 import subprocess
 
-ALLOWED_SUFFIXES={'.py','.json','.jsonl','.csv','.md','.txt','.yml','.yaml'}
+ALLOWED_SUFFIXES={'.py','.json','.jsonl','.csv','.md','.txt','.yml','.yaml','.cpp','.h'}
 ALLOWED_NAMES={'.gitignore','.gitmodules','.gitattributes','LICENSE'}
-ALLOWED_SUBMODULES={'third_party/ndsrecomp'}
+ALLOWED_SUBMODULES={'third_party/ndsrecomp','third_party/recomp-ui'}
 HANDWRITTEN_ASSEMBLY={'tools/cjk_runtime_stub.s'}
 
 def git(*args):
