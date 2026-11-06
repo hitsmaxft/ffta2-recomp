@@ -11,3 +11,8 @@ void ffta2_text_entry(uint32_t pc);
 std::string ffta2_text_status_json();
 
 void ffta2_text_reset();
+
+#include <vector>
+// Snapshot payload belongs to the core transaction, including asynchronous saves.
+std::vector<uint8_t> ffta2_text_export_state();
+bool ffta2_text_import_state(const std::vector<uint8_t>& data, bool commit, std::string* error);

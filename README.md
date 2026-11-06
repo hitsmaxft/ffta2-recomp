@@ -121,3 +121,11 @@ lines and wider static text footprints. Dynamic substitutions and the new CJK
 renderer still require actual game validation. The original single-byte CN
 prototype supports only 23 new glyphs; importing the complete draft table into
 that prototype intentionally fails. The three-byte CJK path is experimental.
+
+## Instant saves
+
+The native launcher enables 12 external save slots. Press Esc and enter
+**Instant saves** to select a timestamped slot and save/load. Shift+F1..F12 saves;
+F1..F12 loads. Native Chinese line plans now travel with the core snapshot so
+loading mid-dialogue restores the text immediately. See
+[slot storage, compatibility and validation](docs/native-savestates.md).

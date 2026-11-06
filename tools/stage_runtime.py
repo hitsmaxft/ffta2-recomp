@@ -17,7 +17,7 @@ def stage(source,output):
     if actual!=PIN:raise ValueError('Unsupported framework revision')
     if output==source or source in output.parents:raise ValueError('Stage must be outside the submodule')
     names=subprocess.check_output(['git','-C',str(source),'ls-files','-z','--recurse-submodules']).decode().split('\0')
-    adapted_names={'runner/CMakeLists.txt','runner/src/main.cpp','runner/src/live_overlay.cpp','runner/src/live_overlay_platform.cpp','runner/src/debug_server.cpp','tools/compile_live_shards.py','runner/src/runtime_arm.cpp','runner/src/tier3.cpp','runner/src/frontend.cpp','runner/src/gpu2d.cpp'}
+    adapted_names={'runner/CMakeLists.txt','runner/src/main.cpp','runner/src/live_overlay.cpp','runner/src/live_overlay_platform.cpp','runner/src/debug_server.cpp','tools/compile_live_shards.py','runner/src/runtime_arm.cpp','runner/src/tier3.cpp','runner/src/frontend.cpp','runner/src/gpu2d.cpp','runner/src/savestate.cpp'}
     for name in names:
         if not name or name in adapted_names:continue
         old=source/name;new=output/name
@@ -121,7 +121,7 @@ def stage(source,output):
         text = text.replace(reset, '        ffta2_text_reset();\n' + reset)
         load = '            : nds_savestate_load_core(path, g_savestate_identity, &error);'
         if text.count(load) != 1: raise ValueError('Text snapshot lifetime guard failed')
-        return text.replace(load, load + '\n        if (ok && cmd == "state_load") ffta2_text_reset();')
+        return text
     adapt('runner/src/debug_server.cpp',text_lifetime)
     def dispatch(text):
         token = '        if (entering_static) {\n            guard_scope.invoke();'
@@ -165,12 +165,105 @@ def stage(source,output):
     }
 #endif
 ''')
-    adapt('runner/src/frontend.cpp',hd_frontend)
+    def state_frontend(text):
+        text=hd_frontend(text)
+        def replace(old,new):
+            nonlocal text
+            if text.count(old)!=1: raise ValueError('State menu guard failed: '+old[:70])
+            text=text.replace(old,new)
+        replace('    bool close_requested = false;', '    bool close_requested = false;\n    int state_slot = 1;\n    std::array<std::string,12> slot_labels;\n    std::array<const char*,12> slot_choices{};')
+        replace('bool save_runtime_mouse_sensitivity(', r'''void refresh_state_slots(RuntimeMenuState& state) {
+    for(unsigned i=0;i<12;++i) {
+        const auto meta=nds_savestate_slot_metadata(state.options->savestate_directory,i+1);
+        state.slot_labels[i]=std::to_string(i+1)+" - ";
+        if(!meta.exists) state.slot_labels[i]+="Empty";
+        else {
+            std::time_t time=meta.modified_unix_seconds;
+            char date[32]{};std::tm local{};
+#if defined(_WIN32)
+            localtime_s(&local,&time);
+#else
+            localtime_r(&time,&local);
+#endif
+            std::strftime(date,sizeof(date),"%m-%d %H:%M",&local);
+            state.slot_labels[i]+=date;
+        }
+        state.slot_choices[i]=state.slot_labels[i].c_str();
+    }
+}
+
+bool save_runtime_mouse_sensitivity(''')
+        replace('    if (!state || !state->options || !item || !value_out) return 0;', '    if (!state || !state->options || !item || !value_out) return 0;\n    if (std::strcmp(item->key,"system.state_slot")==0) {*value_out=state->state_slot;return 1;}')
+        token='    if (!state || !state->options || !item) return 0;'
+        # The setter and enabled callback share a guard; modify each function independently.
+        begin=text.index('int runtime_menu_set_value(')
+        end=text.index('int runtime_menu_run_action(',begin)
+        part=text[begin:end].replace(token,token+'\n    if (std::strcmp(item->key,"system.state_slot")==0) {if(value<1||value>12)return 0;state->state_slot=value;return 1;}')
+        text=text[:begin]+part+text[end:]
+        replace('    if (!state || !item) return 0;', r'''    if (!state || !item) return 0;
+    const bool save=std::strcmp(item->key,"system.save_state")==0;
+    const bool load=std::strcmp(item->key,"system.load_state")==0;
+    if(save || load) {
+        // Queue the existing shortcut path so loads retain all renderer/input
+        // invalidation and asynchronous saves retain the same completion rules.
+        SDL_Event event{};event.type=SDL_KEYDOWN;
+#if defined(NDS_HAVE_SDL3)
+        event.key.scancode=static_cast<SDL_Scancode>(SDL_SCANCODE_F1+state->state_slot-1);
+        event.key.mod=save?SDL_KMOD_SHIFT:SDL_KMOD_NONE;
+#else
+        event.key.keysym.scancode=static_cast<SDL_Scancode>(SDL_SCANCODE_F1+state->state_slot-1);
+        event.key.keysym.mod=save?KMOD_SHIFT:KMOD_NONE;
+#endif
+        if(SDL_PushEvent(&event)<=0)return 0;
+        state->close_requested=true;
+        return 1;
+    }''')
+        begin=text.index('int runtime_menu_is_enabled(')
+        end=text.index('void runtime_menu_save(',begin)
+        part=text[begin:end].replace(token,token+\
+            '\n    if (std::strcmp(item->key,"system.load_state")==0) return nds_savestate_slot_metadata(state->options->savestate_directory,state->state_slot).exists;')
+        text=text[:begin]+part+text[end:]
+        replace('    static const RecompRuntimeUiItem runtime_menu_items[] = {', r'''    refresh_state_slots(runtime_menu_state);
+    const RecompRuntimeUiItem runtime_menu_items[] = {
+        {"system.state_slot", "Instant saves", "Slot", "Choose a slot; timestamps use local time.",
+         RECOMP_RUNTIME_UI_CHOICE, 1, 12, 1, runtime_menu_state.slot_choices.data(), 12, nullptr},
+        {"system.save_state", "Instant saves", "Save current state", "Replaces the selected slot. Shift+F1..F12 also saves.",
+         RECOMP_RUNTIME_UI_ACTION, 0, 0, 0, nullptr, 0, nullptr},
+        {"system.load_state", "Instant saves", "Load selected state", "Restores game and native Chinese text. F1..F12 also loads.",
+         RECOMP_RUNTIME_UI_ACTION, 0, 0, 0, nullptr, 0, nullptr},''')
+        replace('                   const SDL_Rect& destination) {', '                   const SDL_Rect& destination, bool native_text = true) {')
+        replace('        draw_layer(ffta2::host::render_text_layer(screen,width,height));', '        if (native_text) draw_layer(ffta2::host::render_text_layer(screen,width,height));')
+        replace('        render_screen(presentation, 0, top_rect);', '        render_screen(presentation, 0, top_rect, !recomp_runtime_ui_is_open(runtime_ui));')
+        replace('        render_screen(presentation, 1, screen_rect);', '        render_screen(presentation, 1, screen_rect, !recomp_runtime_ui_is_open(runtime_ui));')
+        replace('        render_screen(presentation, screen, screen_rect);', '        render_screen(presentation, screen, screen_rect, screen != 0 || !recomp_runtime_ui_is_open(runtime_ui));')
+        replace('    RuntimeMenuState runtime_menu_state{&options, &running, false};', '    RuntimeMenuState runtime_menu_state{};\n    runtime_menu_state.options=&options;runtime_menu_state.running=&running;')
+        replace('            while (running && scheduler_system_timestamp() < next_frame &&', '            while (running && !runtime_menu_open() && scheduler_system_timestamp() < next_frame &&')
+        replace('        if (!was_open && runtime_menu_open())\n            clear_gameplay_input_for_runtime_menu();', '        if (was_open != bool(runtime_menu_open())) {\n            if (audio) {pause_audio(audio,true);clear_audio_queue(audio,audio_queue);audio_queue.started.store(false,std::memory_order_relaxed); }\n            audio_started=false;\n        }\n        if (!was_open && runtime_menu_open()) {\n            refresh_state_slots(runtime_menu_state);\n            clear_gameplay_input_for_runtime_menu();\n        }')
+        replace('runtime_menu_config.title = "Metroid Prime Hunters";', 'runtime_menu_config.title = "Final Fantasy Tactics A2";')
+        return '#include <ctime>\n'+text
+    adapt('runner/src/frontend.cpp',state_frontend)
     def hd_frames(text):
         token='void nds_gpu2d_finish_frame(){'
         if text.count(token)!=1: raise ValueError('Native text frame boundary guard failed')
         return '#include "host/text_layer.h"\n'+text.replace(token,token+'\n    ffta2::host::publish_text_frame();')
     adapt('runner/src/gpu2d.cpp',hd_frames)
+
+    def native_state(text):
+        def replace(old,new):
+            nonlocal text
+            if text.count(old)!=1: raise ValueError('Native savestate guard failed: '+old[:70])
+            text=text.replace(old,new)
+        text='#include "ffta2/guest_text.h"\n'+text
+        replace('count != kRequiredSections || count > kMaxSections ||', '(count != kRequiredSections && count != kRequiredSections+1) || count > kMaxSections ||')
+        replace('struct CoreState {','struct CoreState {\n    std::vector<uint8_t> native_text;')
+        replace('        tag == kSectionSpu;', '        tag == kSectionSpu || tag == 0x54585446u;')
+        replace('    cp15_savestate_export(&out->cp15);','    out->native_text=ffta2_text_export_state();\n    cp15_savestate_export(&out->cp15);')
+        replace('    bus_fast_refresh();','    if (!ffta2_text_import_state(state.native_text,true,error)) return false;\n    bus_fast_refresh();')
+        replace('    const NdsBusMemorySnapshot& mem = state.memory;', '    if (!ffta2_text_import_state(state.native_text,false,error)) return false;\n    const NdsBusMemorySnapshot& mem = state.memory;')
+        replace('    return atomic_write_file(path, build_file(sections), error);','    if (!append_section(sections,0x54585446u,core.native_text,error)) return false;\n    return atomic_write_file(path, build_file(sections), error);')
+        replace('    // Historical mutable flash is session-local after load.', '    if (find_section(sections,0x54585446u,&payload)) loaded.native_text=payload;\n    // Historical mutable flash is session-local after load.')
+        return text
+    adapt('runner/src/savestate.cpp',native_state)
 
     def provider(text):
         old='".so" if sys.platform.startswith("linux") else "")'

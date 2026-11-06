@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <atomic>
 #include <map>
+#include <stdexcept>
 
 namespace {
 using namespace ffta2;
@@ -208,8 +209,7 @@ void replace_upload(uint32_t staging,uint32_t texture,uint32_t capacity) {
         pending.erase(it);return;
     }
 }
-void draw_native_text() {
-    const uint32_t object=g_cpu.R[0];
+void draw_native_text(uint32_t object) {
     auto it=active.find(object);
     if(it==active.end() || !ram(object,0x158))return;
     const auto& p=it->second;
@@ -295,7 +295,7 @@ void ffta2_text_entry(uint32_t pc) {
     uint32_t expected=pc==0x0204D500?0xe92d4ff8:pc==0x0204B494?0xe92d4ff0:pc==0x0204D778?0xe92d4ff8:pc==0x0204C0B8?0xe92d40f8:
         pc==0x0204C0F8?0xe92d4070:pc==0x020A1678?0xe92d4008:0xe92d4010;
     if(read32(pc)!=expected)return;
-    if(pc==0x0204B494)draw_native_text();
+    if(pc==0x0204B494)draw_native_text(g_cpu.R[0]);
     else if(pc==0x0204D778)begin_page();
     else if(pc==0x0204D500)prepare_list_texture();
     else if(pc==0x0204C0B8||pc==0x0204C0F8)prepare_texture();
@@ -305,4 +305,108 @@ void ffta2_text_entry(uint32_t pc) {
 }
 std::string ffta2_text_status_json() {
     return "{\"bound_texts\":"+std::to_string(bound.load())+",\"rendered_lines\":"+std::to_string(rendered.load())+",\"rejected_lines\":"+std::to_string(rejected.load())+",\"untranslated_tile_labels\":"+std::to_string(tile_labels.load())+"}";
+}
+
+namespace {
+// Explicit little-endian format: never persist pointers or C++ object layouts.
+struct TextStateCodec {
+    std::vector<uint8_t> data;
+    size_t at=0;
+    bool reading=false;
+    void number(uint32_t& value) {
+        if(reading) {
+            if(at+4>data.size())throw std::runtime_error("truncated native text state");
+            value=0;for(unsigned i=0;i<4;++i)value|=uint32_t(data[at++])<<(i*8);
+        } else for(unsigned i=0;i<4;++i)data.push_back(uint8_t(value>>(i*8)));
+    }
+    void string(std::string& value) {
+        uint32_t n=uint32_t(value.size());number(n);
+        if(n>1048576)throw std::runtime_error("native text string too large");
+        if(reading) {
+            if(n>data.size()-at)throw std::runtime_error("truncated native text string");
+            value.assign(reinterpret_cast<const char*>(data.data()+at),n);at+=n;
+        } else data.insert(data.end(),value.begin(),value.end());
+    }
+    void session(Session& value) {
+        number(value.base);number(value.offset);
+        std::string id,translation,source;
+        if(!reading) {id=value.text->id;translation=value.text->utf8;source=value.text->source_utf8;}
+        string(id);string(translation);string(source);
+        if(reading) {
+            value.pack=runtime_localization();
+            value.text=value.pack?value.pack->text(id):nullptr;
+            std::string error;
+            if(!value.text || value.text->utf8!=translation || value.text->source_utf8!=source ||
+               !prepare_unicode_layout(*value.text,advance(value.pack),value.layout,error))
+                throw std::runtime_error("savestate localization differs: "+id);
+        }
+    }
+    void plan(Pending& value) {
+        session(value.session);number(value.object);number(value.source);
+        auto signed_number=[&](int& v){uint32_t n=uint32_t(v);number(n);v=int32_t(n);};
+        signed_number(value.left);signed_number(value.right);signed_number(value.align_edge);
+        string(value.line.stable_id);
+        uint32_t page=value.line.page_index,line=value.line.line_index,width=value.line.width;
+        number(page);number(line);number(width);
+        value.line.page_index=page;value.line.line_index=line;value.line.width=uint16_t(width);
+        uint32_t count=value.line.glyphs.size();number(count);
+        if(count>61 || width>255 || !ram(value.object,0x158) || !ram(value.source,1))
+            throw std::runtime_error("invalid native text geometry");
+        if(reading)value.line.glyphs.resize(count);
+        for(auto& glyph:value.line.glyphs) {
+            uint32_t cp=glyph.codepoint,x=glyph.x,a=glyph.advance;
+            number(cp);number(x);number(a);
+            if(cp>0x10ffff || (cp>=0xd800&&cp<=0xdfff) || x>255 || a>32 || !a || !value.session.pack->glyph(cp))
+                throw std::runtime_error("invalid native text glyph");
+            glyph={char32_t(cp),uint16_t(x),uint16_t(a)};
+        }
+    }
+    template<class T,class F> void map(std::map<uint32_t,T>& values,F item) {
+        uint32_t count=values.size();number(count);
+        if(count>4096)throw std::runtime_error("native text object limit exceeded");
+        if(reading) {
+            for(uint32_t i=0;i<count;++i) {
+                uint32_t key=0;number(key);T value{};item(value);
+                if(!ram(key,1)||!values.emplace(key,std::move(value)).second)
+                    throw std::runtime_error("invalid native text owner");
+            }
+        } else for(auto& entry:values){uint32_t key=entry.first;number(key);item(entry.second);}
+    }
+};
+}
+std::vector<uint8_t> ffta2_text_export_state() {
+    TextStateCodec codec;
+    uint32_t version=1,vector=ffta2::host::vector_text_enabled();codec.number(version);codec.number(vector);
+    codec.map(sessions,[&](Session& s){codec.session(s);});
+    codec.map(pending,[&](Pending& p){codec.plan(p);});
+    codec.map(active,[&](Pending& p){codec.plan(p);});
+    codec.map(list_gaps,[&](uint8_t& g){uint32_t n=g;codec.number(n);});
+    return std::move(codec.data);
+}
+bool ffta2_text_import_state(const std::vector<uint8_t>& data,bool commit,std::string* error) {
+    try {
+        // Legacy snapshots predate the host layer and have no recoverable glyphs.
+        if(data.empty()) {if(commit)ffta2_text_reset();return true;}
+        if(data.size()>8*1024*1024)throw std::runtime_error("native text state too large");
+        TextStateCodec codec;codec.reading=true;codec.data=data;
+        uint32_t version=0,vector=0;codec.number(version);codec.number(vector);
+        if(version!=1 || vector!=uint32_t(ffta2::host::vector_text_enabled()))
+            throw std::runtime_error("savestate native font mode differs");
+        decltype(sessions) restored_sessions;
+        decltype(pending) restored_pending,restored_active;
+        decltype(list_gaps) restored_gaps;
+        codec.map(restored_sessions,[&](Session& s){codec.session(s);});
+        codec.map(restored_pending,[&](Pending& p){codec.plan(p);});
+        codec.map(restored_active,[&](Pending& p){codec.plan(p);});
+        codec.map(restored_gaps,[&](uint8_t& g){uint32_t n=0;codec.number(n);if(n>255)throw std::runtime_error("invalid list gap");g=uint8_t(n);});
+        if(codec.at!=data.size())throw std::runtime_error("trailing native text data");
+        if(commit) {
+            ffta2_text_reset();sessions=std::move(restored_sessions);pending=std::move(restored_pending);
+            active=std::move(restored_active);list_gaps=std::move(restored_gaps);
+            std::vector<uint32_t> owners;for(const auto& entry:active)owners.push_back(entry.first);
+            for(auto owner:owners)draw_native_text(owner);
+            ffta2::host::publish_text_frame();
+        }
+        return true;
+    } catch(const std::exception& e) {if(error)*error=e.what();return false;}
 }

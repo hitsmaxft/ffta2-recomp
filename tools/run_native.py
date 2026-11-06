@@ -19,6 +19,7 @@ def main():
     p.add_argument('--binary', type=Path, default=ROOT / 'build/macos/backend/ffta2-recomp')
     p.add_argument('--serve', action='store_true', help='Headless diagnostic server instead of SDL window')
     p.add_argument('--port', type=int, default=19979)
+    p.add_argument('--savestate-dir', type=Path, help='External instant-save root; defaults to session/states')
     p.add_argument('--save', type=Path, help='Explicit external test save; defaults to no save writes')
     p.add_argument('--title-assets', type=Path, help='External exact-match title texture package')
     p.add_argument('--font', choices=('pixel','system'), default='system')
@@ -43,11 +44,14 @@ def main():
         p.error('Session data must stay outside the repository')
     if not 1024 <= a.port <= 65535:
         p.error('Port must be 1024..65535')
+    states = (a.savestate_dir or session / 'states').resolve()
+    if states == ROOT or ROOT in states.parents or states == rom:
+        p.error('Instant saves must stay outside the repository and ROM')
     binary = a.binary.resolve(strict=True)
     command = [str(binary), '--serve' if a.serve else '--interactive', '--port', str(a.port),
                '--rom', str(rom), '--freebios', '--boot', 'direct', '--generated-firmware',
                '--firmware-state-path', str(session / 'firmware.bin'), '--network', 'off',
-               '--diagnostics', 'on', '--diagnostics-dir', str(session / 'diagnostics'),
+               '--savestate-dir', str(states), '--diagnostics', 'on', '--diagnostics-dir', str(session / 'diagnostics'),
                '--coverage-manifest', str(session / 'coverage.json')]
     if a.localization:
         command += ['--localization', str(a.localization.resolve(strict=True))]

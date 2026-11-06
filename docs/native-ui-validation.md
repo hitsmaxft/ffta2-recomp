@@ -33,7 +33,8 @@ Opening a character overview does not establish those gates.
   the queued `020A1678` path. Both paths now adapt the allocation owned by `0204D500`.
 - Reused menu geometry caused the host layer to disappear when no new glyph draw
   happened in the next VBlank. Text now retains guest-object ownership and is
-  removed on hide, replacement, free, reset, or successful diagnostic state load.
+  removed on hide, replacement, free or reset. New snapshots restore ownership
+  and line plans transactionally; see [instant saves](native-savestates.md).
 - List planning reserves the original right-column anchor and scrollbar gutter.
   After snapshot restore, it can recover the right-column anchor from the guest
   object instead of requiring an old host pointer map.

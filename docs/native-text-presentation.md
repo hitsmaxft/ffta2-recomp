@@ -50,7 +50,7 @@ is intentionally unchanged. Title assets use an exact-source-byte runtime overri
 `tools/build_native_title_assets.py` and selected with `--title-assets`. The
 original atlas dimensions, rectangle table and five palette banks are preserved.
 These labels remain original-resolution artwork, separate from vector dialogue. Arbitrary scene occlusion, widescreen text transforms and
-host text state restoration across snapshots need further validation. Windows and
+full SUB-background font coverage need further validation. Windows and
 Linux backends are extension points, not verified builds.
 
 
@@ -77,7 +77,7 @@ rendering. SUB-background tile text is a separate path: diagnostics count matche
 but untranslated labels, without changing its tile ownership or GPU priorities.
 It is not covered by the 3D dialogue/list hook.
 
-A power reset or successful diagnostic state load clears host text ownership.
-Snapshots do not yet serialize host line plans; load a scene before a message is
-created to reconstruct it normally. Loading a snapshot in the middle of an
-already-replaced message can leave that message blank until the next page.
+A power reset clears host text ownership. New snapshots serialize the native
+line plans and reconstruct visible text immediately on load, including cached
+menu objects. See [instant saves](native-savestates.md) for slot management,
+validation and the limitations of older snapshots without a native text section.
