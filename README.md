@@ -4,14 +4,16 @@ Independent FFTA2 European revision-0 resource recovery, Chinese patch tooling,
 and macOS native recompilation work. Supply your own A6FP ROM. Source and patch
 packages contain no ROM, extracted retail font, save, or generated guest code.
 
-Current CN prototype replaces the first language slot's **opening two-page
-classroom monologue**, adding 20 Fusion Pixel 12px Chinese glyphs in verified
-ROM tail padding. The CSV-driven classroom variant also translates the first three teacher lines
-and the first page addressing Luso. Character naming remains unchanged.
-The remainder of the game and language-menu image labels are
-not translated. Full macOS native gameplay and runtime Unicode replacement
-remain development goals; the current game verification uses an independent
-DeSmuME emulator oracle. The pinned ARMv5TE recompiler builds on macOS arm64.
+The current experimental test integrates a 2613-glyph Chinese bank and replaces
+five opening/classroom event records in the first language slot. Fresh-boot
+Chinese pages, teacher portrait/name variable, pagination and continuation were
+verified in DeSmuME. Character naming is unchanged. It is a partial translation.
+See [the test release notes](docs/cn-font-test.md) and GitHub Releases for a ROM-free
+patch. The older 23-glyph single-byte builder remains as a bounded prototype.
+
+MacOS native gameplay and runtime Unicode replacement remain development goals;
+the current game verification uses an independent emulator oracle. The pinned
+ARMv5TE recompiler tool builds on macOS arm64.
 
 ## Patch application
 

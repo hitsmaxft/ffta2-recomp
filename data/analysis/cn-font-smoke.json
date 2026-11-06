@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "emulator": "DeSmuME libretro git 95b4d79 macOS arm64 interpreter",
+  "native_game_execution": false,
+  "source_sha256": "f9beac8372ec07cd368265289673294d5be73af38935e9c4194f63f2e3735b59",
+  "target_sha256": "9a286e55bc0f6e7e2d5c1ee9ef72b509fcc277a172ebaa4636b0a74a47462921",
+  "font_bank_sha256": "bb99334f7efc74776ada2f15df2ae028f3d9d79e4999f986034866327ed68c92",
+  "glyph_count": 2613,
+  "font_arena_need": 9756,
+  "font_arena_capacity": 10240,
+  "arm9_edits": [
+    {
+      "address": "0x20845f0",
+      "role": "font trampoline",
+      "old_hex": "f8432de90160a0e10250a0e10340a0e1",
+      "new_hex": "04c09fe51cc09ce502fa8ce2b0e41202"
+    },
+    {
+      "address": "0x204c2dc",
+      "role": "per-glyph bank metadata",
+      "old_hex": "760000ea",
+      "new_hex": "c3e000eb"
+    },
+    {
+      "address": "0x204d82c",
+      "role": "preserve D0 in dialogue line",
+      "old_hex": "d50000ea",
+      "new_hex": "6fdb00eb"
+    },
+    {
+      "address": "0x204dd18",
+      "role": "diagnostic line-copy trace",
+      "old_hex": "acf3ffeb",
+      "new_hex": "34da00eb"
+    },
+    {
+      "address": "0x208426c",
+      "role": "font arena",
+      "old_hex": "090b50e3",
+      "new_hex": "0a0b50e3"
+    },
+    {
+      "address": "0x2084418",
+      "role": "font arena",
+      "old_hex": "091ba0e3",
+      "new_hex": "0a1ba0e3"
+    },
+    {
+      "address": "0x2084428",
+      "role": "font arena",
+      "old_hex": "092ba0e3",
+      "new_hex": "0a2ba0e3"
+    }
+  ],
+  "translations": [
+    {
+      "id": "event:0:42:1",
+      "text": "暑假就要到了，\n我都等不及了。\\endPage\\\\end\\老师一讲完，\n我就冲出教室。\\var2:00\\\\end\\",
+      "source_sha256": "b34bd9638095999678ea055a5b97bb739d770a23cb2e78ee6155cfde60165205",
+      "text_bytes": 93,
+      "original_bytes": 107,
+      "original_control_sequence_preserved": true
+    },
+    {
+      "id": "event:0:103:3",
+      "text": "铃响了。\\var2:00\\\\end\\",
+      "source_sha256": "ef7bc284e6ee0559e15f4fe764cceeb505298f42cc203dd4975d6b7e07192648",
+      "text_bytes": 16,
+      "original_bytes": 21,
+      "original_control_sequence_preserved": true
+    },
+    {
+      "id": "event:0:103:4",
+      "text": "祝暑假愉快！\\var2:00\\\\end\\",
+      "source_sha256": "5f1b6d1d81736e49922567d061916ba0ab54bb811446129ef79ca35ef89536b0",
+      "text_bytes": 22,
+      "original_bytes": 23,
+      "original_control_sequence_preserved": true
+    },
+    {
+      "id": "event:0:103:5",
+      "text": "下课！\\var2:00\\\\end\\",
+      "source_sha256": "1d71f1a54af7850068d718dc4a8534947ae37d367872befa902b470764e503ba",
+      "text_bytes": 13,
+      "original_bytes": 20,
+      "original_control_sequence_preserved": true
+    },
+    {
+      "id": "event:0:103:6",
+      "text": "\\varA:00\\\n留下！\\endPage\\\\end\\抱歉，你的假期\n还没开始。\\endPage\\\\end\\朋友们可以回家，\n你，小伙子，\n得去图书馆。\\var2:00\\\\end\\",
+      "source_sha256": "c7365ea4cd25a5a860dbe3cc3c3bcf10617c9509d6038b69439c21e120fef802",
+      "text_bytes": 127,
+      "original_bytes": 166,
+      "original_control_sequence_preserved": true
+    }
+  ],
+  "screenshots": {
+    "prologue_page1": {
+      "path": "screenshots/prologue_page1.png",
+      "frame": 3310,
+      "sha256": "9160e1600868cb2cd154cd997a1fd4858ad38a2a467f5d8ccc69dedafe7153b5"
+    },
+    "prologue_page2": {
+      "path": "screenshots/prologue_page2.png",
+      "frame": 3515,
+      "sha256": "5e4ac77c3a0577c5ddbba025c18c71362e1da9ea4df50eb4fac4541fb9ff6c1e"
+    },
+    "english_continuation": {
+      "path": "screenshots/english_continuation.png",
+      "frame": 4120,
+      "sha256": "c8268674b222e47b563ffc333fcba9f706bc3a455c68447a1dbc5e1d6a6ea099"
+    },
+    "bell": {
+      "path": "screenshots/bell.png",
+      "frame": 10138,
+      "sha256": "caf86aaef2e7d8202af84b9433c7307fc4b49e0b9fea0648479e552822297baf"
+    },
+    "vacation": {
+      "path": "screenshots/vacation.png",
+      "frame": 10441,
+      "sha256": "45cfc0f0df219c2560550304f166a7a28962a3d596742db35b58e221d57b1679"
+    },
+    "dismissal": {
+      "path": "screenshots/dismissal.png",
+      "frame": 10744,
+      "sha256": "3d6f3cbf164069e5f6630d3860c7d6af120da34f4e5a9f351d355371e707a9d6"
+    },
+    "teacher_name": {
+      "path": "screenshots/teacher_name.png",
+      "frame": 12850,
+      "sha256": "2186fe19ac401f69f5972c1dfaa9a5e9c0d795a47f0d37fb82905671cfc6d7f7"
+    },
+    "teacher_page2": {
+      "path": "screenshots/teacher_page2.png",
+      "frame": 13453,
+      "sha256": "9add7faecbe1cd0e7dc14c8e7f4ffad4eb3ad048dcdb8bc37f57f5b7a4569a35"
+    },
+    "teacher_page3": {
+      "path": "screenshots/teacher_page3.png",
+      "frame": 14056,
+      "sha256": "bb0d1e4e1e6938e688f39cc80388a9e57c64a641bfc5b88a6eb9a1e3c9bddc63"
+    },
+    "teacher_continuation": {
+      "path": "screenshots/teacher_continuation.png",
+      "frame": 14659,
+      "sha256": "bb052070dc1022df69c09b89498243dac98ac986c2e44757fb413c2de34ff7d4"
+    }
+  },
+  "observed": [
+    "fresh boot and English title",
+    "original Luso naming flow",
+    "two translated opening pages and A transition into original English",
+    "three classroom messages",
+    "teacher portrait with dynamic Luso name and Chinese text",
+    "three teacher pages and A transition into original English dialogue"
+  ],
+  "limitations": [
+    "5 event records only; not a full translation",
+    "bank glyph hook covers the observed 0204C0F4 rendering path only",
+    "asynchronous resource read loop has no verified timeout or cancellation",
+    "other rendering paths, palette combinations, long names, long sessions and physical hardware are not validated",
+    "0204DD18 diagnostic line-copy hook remains in this exact test build",
+    "object metadata byte +0x25 has not been proven unused by every indirect consumer"
+  ]
+}

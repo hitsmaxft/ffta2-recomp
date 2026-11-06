@@ -10,8 +10,11 @@ from pathlib import Path
 from text_catalog import FIELDS, controls, read_rows
 
 
-def export(catalog, mapping_paths, revised_csv, output):
+def export(catalog, mapping_paths, revised_csv, output, exclusions=None):
     rows=list(read_rows(catalog))
+    excluded={}
+    if exclusions:
+        excluded={r['id']:r for r in (json.loads(line) for line in exclusions.read_text().splitlines())}
     candidates={}
     identities={(r['source_text'],r['source_sha256']) for r in rows if r['id'].split(':')[1]=='0'}
     for path in mapping_paths:
@@ -46,6 +49,10 @@ def export(catalog, mapping_paths, revised_csv, output):
                 if update['source_sha256'] != row['source_sha256'] or controls(update['translation']) != controls(row['source_text']):
                     raise ValueError('Revised translation source/control mismatch')
                 row.update({k:update[k] for k in ('translation','status','notes')})
+            if row['id'] in excluded:
+                if excluded[row['id']]['source_sha256']!=row['source_sha256']:
+                    raise ValueError('Naming exclusion source identity differs')
+                row.update(translation='',status='untranslated',notes='Excluded naming screen; preserve original')
             translated+=row['status']=='translated'
             review+=row['status']=='review'
             untranslated+=row['status']=='untranslated'
@@ -53,7 +60,7 @@ def export(catalog, mapping_paths, revised_csv, output):
     manifest=dict(schema_version=1,catalog_rows=len(rows),language_slot=0,
                   slot0_rows=translated+review+untranslated,planned_accepted_rows=translated,
                   review_rows=review,untranslated_rows=untranslated,full_translation=False,
-                  runtime_cjk_encoding_verified=False,
+                  runtime_cjk_encoding_verified=False,excluded_naming_rows=len(excluded),
                   files={name:dict(sha256=hashlib.sha256((output/name).read_bytes()).hexdigest(),bytes=(output/name).stat().st_size)
                          for name in ('catalog.csv','machine-cn.csv')})
     (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
@@ -66,7 +73,8 @@ def main():
     p.add_argument('--mapping',action='append',default=[],type=Path)
     p.add_argument('--revised-csv',type=Path)
     p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--exclude-ids',type=Path)
     a=p.parse_args()
-    print(json.dumps(export(a.catalog,a.mapping,a.revised_csv,a.output),indent=2))
+    print(json.dumps(export(a.catalog,a.mapping,a.revised_csv,a.output,a.exclude_ids),indent=2))
 
 if __name__=='__main__':main()

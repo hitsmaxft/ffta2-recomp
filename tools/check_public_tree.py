@@ -9,6 +9,7 @@ import subprocess
 ALLOWED_SUFFIXES={'.py','.json','.jsonl','.csv','.md','.txt','.yml','.yaml'}
 ALLOWED_NAMES={'.gitignore','.gitmodules','.gitattributes','LICENSE'}
 ALLOWED_SUBMODULES={'third_party/ndsrecomp'}
+HANDWRITTEN_ASSEMBLY={'tools/cjk_runtime_stub.s'}
 
 def git(*args):
     return subprocess.check_output(['git',*args])
@@ -32,7 +33,7 @@ def main():
             continue
         if mode not in {'100644','100755'}:
             errors.append(name+': unsupported mode')
-        if path.suffix not in ALLOWED_SUFFIXES and path.name not in ALLOWED_NAMES:
+        if path.suffix not in ALLOWED_SUFFIXES and path.name not in ALLOWED_NAMES and name not in HANDWRITTEN_ASSEMBLY:
             errors.append(name+': file type not allowlisted')
         if path.name=='AGENTS.local.md' or any(part in {'build','generated','.venv','__pycache__'} for part in path.parts):
             errors.append(name+': private/build path')

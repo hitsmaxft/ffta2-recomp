@@ -55,6 +55,7 @@ def main():
     p.add_argument('--output',required=True,type=Path)
     p.add_argument('--scope',required=True)
     p.add_argument('--experiment-receipt',type=Path)
+    p.add_argument('--bank-index',type=Path)
     a=p.parse_args()
     dest=a.output.resolve()
     if dest.suffix!='.bps' or dest in (a.source.resolve(),a.target.resolve()) or ROOT==dest or ROOT in dest.parents:
@@ -86,8 +87,14 @@ def main():
         if experiment['source_sha256']!=SHA or experiment['target_sha256']!=receipt['target_sha256']:
             raise ValueError('Experiment receipt target identity differs')
         receipt['experiment']=experiment
+        if a.bank_index:
+            glyphs=json.loads(a.bank_index.read_text())['glyphs']
+            bank,_=Archive(target).read('menu/font/CJKtest4.bin')
+            if len(glyphs)!=experiment['glyph_count'] or len(bank)!=64*len(glyphs) or hashlib.sha256(bank).hexdigest()!=experiment['font_bank_sha256']:
+                raise ValueError('Full font bank receipt/map differs')
+            receipt['bank_glyphs']=glyphs
     dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(patch)
     dest.with_suffix('.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n')
-    print(json.dumps({k:v for k,v in receipt.items() if k!='experiment'},indent=2))
+    print(json.dumps({k:v for k,v in receipt.items() if k not in ('experiment','bank_glyphs')},indent=2))
 
 if __name__=='__main__':main()
