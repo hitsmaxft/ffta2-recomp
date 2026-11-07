@@ -81,9 +81,26 @@ def stage(source,output):
         if text.count(old)!=1:raise ValueError('Native diagnostics include guard failed')
         text = text.replace(old,'#include "arm9_native.h"')
         text = '#include "host/presentation_capture.h"\n#include "ffta2/localization_runtime.h"\n#include "ffta2/guest_text.h"\n' + text
+        text = '#include "host/checkpoint.h"\n' + text
         token = '    std::string cmd = json_str(line, "cmd");'
         if text.count(token) != 1: raise ValueError('Localization debug handler guard failed')
-        return text.replace(token, token + '\n    if (cmd == "presentation_capture") return ffta2::host::request_presentation_capture(json_str(line,"path"));\n    if (cmd == "presentation_capture_status") return ffta2::host::presentation_capture_status();\n    if (cmd == "localization_render_stats") return ffta2_text_status_json();\n    if (cmd == "localization_info") return ffta2::localization_info_json();\n    if (cmd == "localization_reload") return ffta2::reload_localization_json();')
+        checkpoint_handler = r'''
+    if (cmd == "checkpoint_identity")
+        return "{\"build_id\":\""+json_escape(g_savestate_identity.build_id)+
+               "\",\"rom_sha1\":\""+json_escape(g_savestate_identity.rom_sha1)+"\",\"headless\":"+(g_play_mode?"false":"true")+"}";
+    if (cmd == "checkpoint_save" || cmd == "checkpoint_load" || cmd == "checkpoint_drop") {
+        if (g_play_mode) return "{\"error\":\"Memory checkpoints require headless serve mode\"}";
+        const uint64_t slot=json_u64(line,"slot",UINT64_MAX);
+        if(slot>3)return "{\"error\":\"Memory checkpoint slot must be 0..3\"}";
+        std::string error;
+        const bool ok=cmd=="checkpoint_save"?ffta2::host::save_checkpoint(unsigned(slot),g_savestate_identity,&error):
+            cmd=="checkpoint_load"?ffta2::host::load_checkpoint(unsigned(slot),g_savestate_identity,&error):
+            ffta2::host::drop_checkpoint(unsigned(slot),&error);
+        if(!ok)return "{\"error\":\""+json_escape(error)+"\"}";
+        return "{\"ok\":true}";
+    }
+'''
+        return text.replace(token, token + checkpoint_handler + '\n    if (cmd == "presentation_capture") return ffta2::host::request_presentation_capture(json_str(line,"path"));\n    if (cmd == "presentation_capture_status") return ffta2::host::presentation_capture_status();\n    if (cmd == "localization_render_stats") return ffta2_text_status_json();\n    if (cmd == "localization_info") return ffta2::localization_info_json();\n    if (cmd == "localization_reload") return ffta2::reload_localization_json();')
     def hd_debug(text):
         text=debug(text)
         text='#include "host/text_layer.h"\n#include "host/display_options.h"\n'+text
@@ -288,7 +305,7 @@ bool save_runtime_mouse_sensitivity(''')
         replace('    return atomic_write_file(path, build_file(sections), error);','    if (!append_section(sections,0x54585446u,core.native_text,error)) return false;\n    return atomic_write_file(path, build_file(sections), error);')
         replace('    // Historical mutable flash is session-local after load.', '    if (find_section(sections,0x54585446u,&payload)) loaded.native_text=payload;\n    // Historical mutable flash is session-local after load.')
         return text
-    adapt('runner/src/savestate.cpp',native_state)
+    adapt('runner/src/savestate.cpp',lambda text: native_state(text)+'\n#include "host/checkpoint_runtime.inc"\n')
 
     def provider(text):
         old='".so" if sys.platform.startswith("linux") else "")'

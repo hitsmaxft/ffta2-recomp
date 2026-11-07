@@ -72,3 +72,15 @@ never label incomplete translation tables as a complete Chinese release.
   Windows gameplay session. Public CI must not download or upload retail assets.
 - Before publication, stage explicit source/document paths and run
   `python tools/check_public_tree.py` against the staged blobs.
+
+## Repeatable regression scenes
+
+- Prefer `tools/native_scenario.py` with a dedicated headless session, an exact-build
+  named scene and recorded DS input. Restore RAM checkpoints for repeated checks;
+  do not navigate manually and capture every step to reconstruct a known scene.
+- Approve the baseline visually once, then compare both presentation hashes and
+  scheduler/CPU timestamps. Generate images on divergence or at an intentional
+  visual checkpoint. SDL window behavior still needs actual presentation captures.
+- Never bypass snapshot build/ROM/font checks or use another agent/player's RAM
+  slots. Keep recordings, states and reports external. A matching replay confirms
+  reproducibility, not translation accuracy or complete gameplay coverage.

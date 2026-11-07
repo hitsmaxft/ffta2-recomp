@@ -22,7 +22,8 @@ incompletely covered and require further visual validation.
 See [the macOS backend](docs/macos-native.md),
 [Windows build and test workflow](docs/windows-native.md),
 [external localization](docs/native-localization.md), and
-[native text presentation and UI testing](docs/native-text-presentation.md).
+[native text presentation and UI testing](docs/native-text-presentation.md), and
+[checkpoint/input replay](docs/native-scenarios.md).
 Fallback coverage is incomplete; SDL Metal presentation is not an NDS Metal renderer.
 
 ## Required original ROM

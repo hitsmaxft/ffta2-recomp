@@ -65,3 +65,7 @@ so this does not establish a visual pass for the menu's on-screen layout.
 The save feature does not extend translation coverage. Inventory and unit-status
 SUB-background text still require their separate native font integration; see
 [native UI validation](native-ui-validation.md).
+
+For repeatable tests, use [RAM checkpoints and recorded input timelines](native-scenarios.md).
+Restore a named scene once, then replay frame-counted input from memory; successful
+checks need no repeated screenshots.
