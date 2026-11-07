@@ -168,6 +168,8 @@ def stage(source,output):
     def state_frontend(text):
         text=hd_frontend(text)
         text='#include "host/presentation_capture.h"\n'+text
+        if text.count('void draw_savestate_notice(')!=1 or text.count('SDL_RenderPresent(renderer);')!=3:
+            raise ValueError('SDL presentation capture guard failed')
         text=text.replace('void draw_savestate_notice(', r'''void capture_native_presentation(SDL_Renderer* renderer) {
 #if defined(NDS_HAVE_SDL3)
     const auto path=ffta2::host::take_presentation_capture();

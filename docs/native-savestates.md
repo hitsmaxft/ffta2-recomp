@@ -25,7 +25,9 @@ the game's canonical battery save after a historical load.
 
 The `FTXT` section stores sessions, original resource IDs, source/translated
 strings, page offsets, resolved Unicode placements, pending texture uploads,
-active text owners and list-column gaps. It uses explicit bounded little-endian
+active text owners and list-column gaps. Version 5 also stores tile/widget
+ownership, the published frame with clipping masks, and palette-role bitmap
+glyphs so transient UI text is available immediately after import. It uses explicit bounded little-endian
 fields; no host pointers or C++ object memory are persisted. The section shares
 the core container's CRC, atomic publication and rollback transaction. Async
 publication serializes an already captured payload and never reads live objects.

@@ -68,3 +68,20 @@ The Windows CI job executes these checks on a Windows runner without retail
 assets. It checks Chinese glyph coverage, scaling/baseline, bitmap palette roles,
 text clipping/lifetime, snapshot-frame restoration, control-safe layout and hash
 vectors. These host tests do not establish full Windows gameplay coverage.
+
+## Validation record (2026-11-07)
+
+- Windows runner / MSVC: all three asset-free CTest cases passed in
+  [Windows host validation](https://github.com/hitsmaxft/ffta2-recomp/actions/runs/42325860128).
+- macOS ARM64: full runtime build and all three host tests passed; 36 Python tests
+  passed. Existing native inventory captures verify separate Chinese category,
+  item names and quantity columns.
+- Windows x64 full runtime cross-build completed with llvm-mingw (PE32+ x86-64).
+  Host executables passed the same three
+  tests under Wine 11, using an external WenQuanYi font. The full executable
+  boots the unchanged ROM with 10,565 external text entries, 37,603 glyphs and
+  five palettes; SDL Direct3D presentation and WASAPI initialize successfully.
+  This compatibility-layer run is not a Windows performance benchmark.
+
+MSVC CI covers the host layer only. Full retail gameplay on a physical Windows
+machine has not been validated; do not infer that from the asset-free CI result.
