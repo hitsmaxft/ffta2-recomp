@@ -63,8 +63,10 @@ def audit(manifest,catalog):
         raise ValueError('Missing source recipes')
     return refs
 
-def export(catalog,output,language=0,metrics=None,batch_size=128):
+def export(catalog,output,language=0,metrics=None,batch_size=128,source_cjk_bytes=None):
     enc=codec()
+    if source_cjk_bytes not in (None,2,3):raise ValueError('Source CJK planning width must be 2 or 3 bytes')
+    enc.extended_bytes=source_cjk_bytes
     if metrics:
         enc.widths=json.loads(metrics.read_text())['widths']
     fragments={}
@@ -94,7 +96,7 @@ def export(catalog,output,language=0,metrics=None,batch_size=128):
     lines=[]
     for key,source in fragments.items():
         dimensions=enc.analyze(source)
-        limits=dict(max_encoded_bytes=dimensions['encoded_bytes'],cjk_bytes=3,max_lines=1,
+        limits=dict(max_encoded_bytes=dimensions['encoded_bytes'],cjk_bytes=source_cjk_bytes or 3,max_lines=1,
                     max_width_px=max(dimensions['pages'][0]) if metrics else None)
         lines.append(json.dumps(dict(id=key,source=source,translation='',limits=limits),ensure_ascii=False)+'\n')
     (output/'model-input.jsonl').write_text(''.join(lines))
@@ -102,7 +104,7 @@ def export(catalog,output,language=0,metrics=None,batch_size=128):
         (batches/f'part-{start//batch_size+1:04d}.jsonl').write_text(''.join(lines[start:start+batch_size]))
     (output/'reconstruction.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     (output/'PROMPT.txt').write_text(PROMPT)
-    report=dict(source_rows=len(recipes),unique_text_fragments=len(fragments),pre_translation_audit='passed',controls_exposed_to_model=False,manifest_sha256=manifest['integrity_sha256'])
+    report=dict(source_rows=len(recipes),unique_text_fragments=len(fragments),pre_translation_audit='passed',controls_exposed_to_model=False,source_cjk_planning_bytes=source_cjk_bytes,manifest_sha256=manifest['integrity_sha256'])
     (output/'audit.json').write_text(json.dumps(report,indent=2)+'\n')
     return report
 
@@ -149,7 +151,7 @@ def assemble(catalog,manifest_path,response,output,allow_partial=False):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     sub=p.add_subparsers(dest='command',required=True)
-    e=sub.add_parser('export');e.add_argument('--language',type=int,choices=range(4),default=0);e.add_argument('--metrics',type=Path);e.add_argument('--batch-size',type=int,default=128)
+    e=sub.add_parser('export');e.add_argument('--language',type=int,choices=range(4),default=0);e.add_argument('--metrics',type=Path);e.add_argument('--batch-size',type=int,default=128);e.add_argument('--source-cjk-bytes',type=int,choices=[2,3],help='Planning only: accept an existing Chinese source catalog')
     i=sub.add_parser('import');i.add_argument('--manifest',required=True,type=Path);i.add_argument('--response',required=True,type=Path);i.add_argument('--allow-partial',action='store_true')
     for command in (e,i):
         command.add_argument('--catalog',required=True,type=Path);command.add_argument('--output',required=True,type=Path)
@@ -157,7 +159,7 @@ def main():
     if a.output.resolve()==a.catalog.resolve() or (a.command=='import' and a.output.resolve() in (a.manifest.resolve(),a.response.resolve())):
         p.error('Output must not overwrite an input')
     if a.command=='export' and a.batch_size<1:p.error('Batch size must be positive')
-    if a.command=='export':result=export(a.catalog,a.output,a.language,a.metrics,a.batch_size)
+    if a.command=='export':result=export(a.catalog,a.output,a.language,a.metrics,a.batch_size,a.source_cjk_bytes)
     else:result=assemble(a.catalog,a.manifest,a.response,a.output,a.allow_partial)
     print(json.dumps(result,indent=2))
 

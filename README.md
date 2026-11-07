@@ -4,7 +4,17 @@ Independent FFTA2 European revision-0 resource recovery, Chinese patch tooling,
 and native recompilation work for macOS ARM64 and Windows. Supply your own A6FP ROM. Source and patch
 packages contain no ROM, extracted retail font, save, or generated guest code.
 
-The current experimental test integrates a 2613-glyph Chinese bank and replaces
+The current primary development target is **USA A6FE revision 0, Chinese ROM
+0.6.1**, using a user-supplied human translation 0.6 as private input. The original
+ROM patch and native localization backends are independent; see
+[the USA 0.6.1 implementation and local workflow](docs/usa-cn-0.6.1.md).
+USA inputs, versioned human text and local release records are maintained in the
+owner's separate private `ffta2-us-cn` repository. They are excluded from this
+public source tree and its releases.
+The EU native runner described below remains revision-specific and is not yet
+a validated USA native port.
+
+The earlier EU experimental test integrates a 2613-glyph Chinese bank and replaces
 five opening/classroom event records in the first language slot. Fresh-boot
 Chinese pages, teacher portrait/name variable, pagination and continuation were
 verified in DeSmuME. Character naming is unchanged. It is a partial translation.
@@ -28,7 +38,7 @@ Fallback coverage is incomplete; SDL Metal presentation is not an NDS Metal rend
 
 ## Required original ROM
 
-Use **Final Fantasy Tactics A2: Grimoire of the Rift — Europe, A6FP, revision 0**.
+For the existing **EU native runner**, use **Final Fantasy Tactics A2: Grimoire of the Rift — Europe, A6FP, revision 0**.
 The input must be the original, unmodified ROM with this exact SHA-256:
 
 ```text
@@ -43,6 +53,10 @@ unchanged. No ROM is provided in this repository or its releases.
 
 Check your file with `shasum -a 256 retail.nds` on macOS, `sha256sum retail.nds`
 on Linux, or `Get-FileHash retail.nds -Algorithm SHA256` in Windows PowerShell.
+
+The USA ROM backend instead requires the exact original hash in
+[config/rom-us-rev0.json](config/rom-us-rev0.json). Never interchange these inputs
+or disable their identity checks.
 
 ## Patch application
 

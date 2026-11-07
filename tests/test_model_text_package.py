@@ -10,6 +10,19 @@ from model_text_package import export,assemble,audit,digest
 from text_catalog import FIELDS,controls
 
 class ModelPackageTests(unittest.TestCase):
+    def test_existing_chinese_source_has_explicit_two_byte_planning(self):
+        catalog=self.root/'human.csv'
+        with catalog.open('w',encoding='utf-8-sig',newline='') as stream:
+            writer=csv.DictWriter(stream,fieldnames=FIELDS);writer.writeheader()
+            writer.writerow(dict(id='event:0:1:0',source_sha256='fixture',source_text='甲乙\\end\\',status='review'))
+        package=self.root/'human-package'
+        result=export(catalog,package,source_cjk_bytes=2)
+        item=json.loads((package/'model-input.jsonl').read_text().splitlines()[0])
+        self.assertEqual(item['source'],'甲乙')
+        self.assertEqual(item['limits']['max_encoded_bytes'],4)
+        self.assertEqual(item['limits']['cjk_bytes'],2)
+        self.assertFalse(result['controls_exposed_to_model'])
+
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.root=Path(self.tmp.name);self.catalog=self.root/'catalog.csv'

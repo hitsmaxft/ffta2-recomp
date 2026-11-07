@@ -35,6 +35,8 @@ def main():
             errors.append(name+': unsupported mode')
         if path.suffix not in ALLOWED_SUFFIXES and path.name not in ALLOWED_NAMES and name not in HANDWRITTEN_ASSEMBLY:
             errors.append(name+': file type not allowlisted')
+        if path.name.endswith('-private.csv') or any(part in {'private','local-data','imports'} for part in path.parts):
+            errors.append(name+': private translation import')
         if path.name=='AGENTS.local.md' or any(part in {'build','generated','.venv','__pycache__'} for part in path.parts):
             errors.append(name+': private/build path')
         data=git('cat-file','blob',oid)
@@ -51,6 +53,12 @@ def main():
             errors.append(name+': binary NUL')
         if re.search(r'(?:gh[pousr]_[A-Za-z0-9]{30,}|sk-[A-Za-z0-9_-]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)',text):
             errors.append(name+': possible credential')
+        if path.suffix=='.json':
+            try:
+                if isinstance(value:=json.loads(text),dict) and value.get('private_do_not_publish') is True:
+                    errors.append(name+': private extraction manifest')
+            except json.JSONDecodeError:
+                pass
         if path.suffix=='.csv':
             header=text.splitlines()[0] if text else ''
             if any(field in header.lower() for field in ('raw_hex','base64','payload_bytes')):

@@ -84,3 +84,34 @@ never label incomplete translation tables as a complete Chinese release.
 - Never bypass snapshot build/ROM/font checks or use another agent/player's RAM
   slots. Keep recordings, states and reports external. A matching replay confirms
   reproducibility, not translation accuracy or complete gameplay coverage.
+
+## USA Chinese 0.6.1 development direction
+
+- USA A6FE revision 0 (config/rom-us-rev0.json) is now the primary validation
+  target. Keep EU identities, address maps and banks separate. Existing EU native
+  dispatches are not validated for USA; never bypass the launcher identity gate.
+- Maintain two independent implementations: an original-ROM patch backend
+  (codec, font/width/palette packing, archive rebuilding and bounded guest hooks)
+  and native localization backends (external Unicode resources and host rendering).
+  Share stable text IDs and import data, not runtime dependencies. A patched ROM
+  must run directly in an emulator without host overlays or sidecar assets.
+- The supplied USA human translation 0.6 is the source for 0.6.1, replacing
+  machine-translation input for this target. Keep its original text, derived CSVs,
+  glyph maps, font assets, reference code, ROMs, BPS files and packages PRIVATE
+  and outside this checkout. Do not publish them to Git or releases until the
+  user explicitly revisits publication. This overrides the earlier data/ export
+  exception for this USA source. Tools, schemas, addresses, hashes, synthetic
+  tests and implementation plans may be tracked.
+- Reuse legacy glyph numbers as import/export mapping only. Do not treat OCR
+  candidates as approved Unicode text. Preserve byte-exact 0.6 payloads while
+  validating a ROM compatibility candidate; do not silently replace controls,
+  untranslated lines or uncertain characters with machine-generated content.
+- Fix only guarded, evidenced faults. Bounds must match the actual owning heap
+  and allocation, not just a font-copy limit. Rebuild NitroFS normally, preserve
+  resource IDs, verify BPS independently and test game progression from local
+  checkpoints. Report local candidate validation separately from a full playthrough.
+- The owner subsequently authorized ROM/text backups only in the separate private
+  `hitsmaxft/ffta2-us-cn` repository, using LFS and local builds without workflows.
+  That exception does not permit retail binaries or supplied human text in this
+  public repository. Keep generic tooling here and versioned private release data
+  there. Verify private visibility before pushing private inputs.

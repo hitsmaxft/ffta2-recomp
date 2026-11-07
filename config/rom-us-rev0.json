@@ -1,0 +1,11 @@
+{
+  "title": "FFTA2-USA",
+  "gamecode": "A6FE",
+  "revision": 0,
+  "size": 134217728,
+  "sha256": "3b5d469aae5d351de31a89cf2bf592c98cb5b68cb4efc30b34426a119fee2372",
+  "arm9_rom_offset": 16384,
+  "arm9_ram_address": 33554432,
+  "primary_validation_target": true,
+  "native_dispatch_port_validated": false
+}
