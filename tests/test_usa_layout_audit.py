@@ -52,6 +52,14 @@ class LayoutAuditTests(unittest.TestCase):
         for raw in [b'\xa9', b'\xc1', b'\x02\0\x03']:
             self.assertTrue(measure(raw, self.metrics, True)['problems'])
 
+    def test_inline_icons_also_consume_glyph_descriptors(self):
+        class Narrow:
+            def glyph(self, index):
+                return 3, 0, 3
+        layout = measure(b'\x02' * 61 + b'\xcb\x11', Narrow(), True, {'CB11': 12})
+        row = inspect('fixture', layout, layout, 1, {})
+        self.assertTrue(any('62 glyphs/icons' in e for e in row['errors']))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -84,7 +84,7 @@ def measure(data, metrics, chinese, dynamic_widths=None):
     dynamic_widths = dynamic_widths or {}
     pages, lines, problems, controls, breaks = [], [], [], [], []
     def empty_line():
-        return dict(advance_px=0, ink_right_px=0, glyphs=0, unknown_width_tokens=[],
+        return dict(advance_px=0, ink_right_px=0, glyphs=0, icon_glyphs=0, unknown_width_tokens=[],
                     reserved_dynamic_px=0, byte_start=pos, byte_end=pos)
     pos = 0
     line = empty_line()
@@ -131,6 +131,8 @@ def measure(data, metrics, chinese, dynamic_widths=None):
                         (code == 0xce and parameter < 4)):
                     line['unknown_width_tokens'].append(token)
             else:
+                if code == 0xcb:
+                    line['icon_glyphs'] += 1
                 if token in dynamic_widths:
                     amount = dynamic_widths[token]
                     if not isinstance(amount, int) or isinstance(amount, bool) or not 0 <= amount <= 255:
@@ -179,8 +181,9 @@ def inspect(key, before, after, metadata_lines, limits):
                 errors.append(f'{prefix}: literal width {lower}px exceeds {width_limit}px')
             elif lower + line['reserved_dynamic_px'] > width_limit:
                 errors.append(f'{prefix}: reserved width exceeds {width_limit}px')
-            if line['glyphs'] > glyph_limit:
-                errors.append(f'{prefix}: {line["glyphs"]} glyphs exceeds descriptor limit {glyph_limit}')
+            descriptors = line['glyphs'] + line['icon_glyphs']
+            if descriptors > glyph_limit:
+                errors.append(f'{prefix}: {descriptors} glyphs/icons exceeds descriptor limit {glyph_limit}')
             if line['unknown_width_tokens']:
                 warnings.append(f'{prefix}: unresolved dynamic/icon widths ' + ','.join(line['unknown_width_tokens']))
         if p < len(before['pages']):
