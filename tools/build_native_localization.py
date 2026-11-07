@@ -187,7 +187,8 @@ if __name__ == '__main__':
     parser.add_argument('--recipe', type=Path)
     parser.add_argument('--catalog', type=Path, default=ROOT/'data/text/catalog.csv')
     parser.add_argument('--translations', type=Path, default=ROOT/'data/text/machine-cn.csv')
-    parser.add_argument('--include-review', action='store_true')
+    parser.add_argument('--include-review', action=argparse.BooleanOptionalAction, default=True,
+                        help='Include machine-translation review drafts (default); controls remain validated')
     parser.add_argument('--all-font-glyphs', action='store_true', help='Bundle every printable font glyph for future translations')
     parser.add_argument('--output', type=Path, required=True)
     result = build(parser.parse_args())

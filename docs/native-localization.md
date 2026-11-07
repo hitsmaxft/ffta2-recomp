@@ -18,7 +18,8 @@ character. Original western glyphs retain their original widths.
 
 The optional recipe accepts `bank_glyphs` or `glyphs`; every non-ASCII character
 in every available draft is added as well. Only `translated` rows enter runtime
-text resources by default. `--include-review` explicitly enables review drafts;
+text resources. Review drafts are included by default for the machine-translation
+test build; `--no-include-review` explicitly excludes them;
 both CSV status and host record retain that distinction. Every accepted row
 must match the original catalog hash, actual ROM source bytes, and original
 control-token sequence including variable parameters. Line endings normalize

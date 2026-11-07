@@ -1,7 +1,7 @@
 # ffta2-recomp
 
 Independent FFTA2 European revision-0 resource recovery, Chinese patch tooling,
-and macOS native recompilation work. Supply your own A6FP ROM. Source and patch
+and native recompilation work for macOS ARM64 and Windows. Supply your own A6FP ROM. Source and patch
 packages contain no ROM, extracted retail font, save, or generated guest code.
 
 The current experimental test integrates a 2613-glyph Chinese bank and replaces
@@ -16,11 +16,32 @@ mixed AOT/Tier3 execution. External text/font/palette packs leave the ROM unchan
 Prologue dialogue uses high-resolution PingFang through CoreText, with optional
 LCD masking and resizable presentation. An external atlas override covers title,
 difficulty and language labels. In-game menu coverage remains incomplete: inventory
-and other SUB-background text still require integration and visual validation.
-See [the native backend](docs/macos-native.md),
+categories and item names now have bitmap fallback, and selected SUB-background
+labels use vector text. Descriptions, fixed atlas labels and other surfaces remain
+incompletely covered and require further visual validation.
+See [the macOS backend](docs/macos-native.md),
+[Windows build and test workflow](docs/windows-native.md),
 [external localization](docs/native-localization.md), and
 [native text presentation and UI testing](docs/native-text-presentation.md).
 Fallback coverage is incomplete; SDL Metal presentation is not an NDS Metal renderer.
+
+## Required original ROM
+
+Use **Final Fantasy Tactics A2: Grimoire of the Rift — Europe, A6FP, revision 0**.
+The input must be the original, unmodified ROM with this exact SHA-256:
+
+```text
+f9beac8372ec07cd368265289673294d5be73af38935e9c4194f63f2e3735b59
+```
+
+A matching filename, game title or region is insufficient: the complete file hash
+must match. US/Japanese ROMs, other revisions, trimmed files and prepatched Chinese
+ROMs are not accepted by the native launcher. It checks SHA-256 before starting.
+Native Chinese text and fonts come from external resources; keep the original ROM
+unchanged. No ROM is provided in this repository or its releases.
+
+Check your file with `shasum -a 256 retail.nds` on macOS, `sha256sum retail.nds`
+on Linux, or `Get-FileHash retail.nds -Algorithm SHA256` in Windows PowerShell.
 
 ## Patch application
 

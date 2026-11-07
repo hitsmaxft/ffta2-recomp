@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "localization_pack.h"
-#include <CommonCrypto/CommonDigest.h>
+#include "host/digest.h"
 #include <algorithm>
 #include <atomic>
 #include <fstream>
@@ -25,9 +25,7 @@ Bytes read(const std::filesystem::path& path) {
     return bytes;
 }
 std::array<uint8_t, 32> sha(const Bytes& bytes) {
-    std::array<uint8_t, 32> result{};
-    CC_SHA256(bytes.data(), static_cast<CC_LONG>(bytes.size()), result.data());
-    return result;
+    return host::sha256(bytes.data(),bytes.size());
 }
 std::string hex(const std::array<uint8_t, 32>& bytes) {
     std::string result; constexpr char digits[] = "0123456789abcdef";

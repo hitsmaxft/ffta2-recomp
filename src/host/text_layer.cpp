@@ -63,8 +63,16 @@ void clear_text_frames() {
     std::lock_guard<std::mutex> lock(frame_mutex);
     published.clear(); building.clear();retained.clear();
 }
+std::vector<TextDraw> snapshot_text_frame() {
+    std::lock_guard<std::mutex> lock(frame_mutex);return published;
+}
+void restore_text_frame(std::vector<TextDraw> draws) {
+    std::lock_guard<std::mutex> lock(frame_mutex);
+    building.clear();retained.clear();published=std::move(draws);
+    for(const auto& draw:published)if(draw.owner)retained[draw.owner]=draw;
+}
 std::vector<uint32_t> render_text_layer(int screen, unsigned width, unsigned height) {
-    if (!vector_text_enabled() || !width || !height || width>4096 || height>3072) return {};
+    if (!width || !height || width>4096 || height>3072) return {};
     std::vector<TextDraw> draws;
     { std::lock_guard<std::mutex> lock(frame_mutex); draws=published; }
     bool any=false; for (const auto& draw:draws) if(draw.screen==screen&&!draw.glyphs.empty()) any=true;
@@ -79,9 +87,11 @@ std::vector<uint32_t> render_text_layer(int screen, unsigned width, unsigned hei
     auto mix=[&](uint64_t value) { signature=(signature^value)*1099511628211ull; };
     for(const auto& draw:draws) if(draw.screen==screen) {
         mix(draw.glyphs.size());
+        for(auto visible:draw.clip)mix(visible);
         for(const auto& glyph:draw.glyphs) {
+            mix(glyph.pixel);if(glyph.pixel){for(auto b:glyph.bitmap)mix(b);mix(glyph.shadow);}
             mix(glyph.codepoint);mix(uint32_t(std::lround(glyph.x*256)));
-            mix(uint32_t(std::lround(glyph.y*256)));mix(glyph.color);mix(glyph.outline);
+            mix(uint32_t(std::lround(glyph.y*256)));mix(glyph.color);mix(glyph.outline);mix(uint32_t(glyph.em*256));
         }
     }
     auto& frame=frames[screen&1];
@@ -90,14 +100,28 @@ std::vector<uint32_t> render_text_layer(int screen, unsigned width, unsigned hei
     // Cache belongs to each renderer thread, independent of guest/pack lifetime.
     thread_local auto font=make_system_font();
     thread_local std::map<std::pair<char32_t,unsigned>,GlyphCoverage> cache;
-    if (!font) return {};
+
     const float sx=float(width)/256, sy=float(height)/192;
-    const unsigned size=std::max(4u,unsigned(std::lround(12*sy)));
     if (cache.size()>8192) cache.clear();
     std::vector<uint32_t> pixels(size_t(width)*height);
     for (const auto& draw:draws) {
         if(draw.screen!=screen) continue;
         for (const auto& glyph:draw.glyphs) {
+            if(glyph.pixel) {
+                const int ox=int(std::lround(glyph.x*sx)),oy=int(std::lround(glyph.y*sy));
+                const unsigned w=unsigned(std::ceil(16*sx)),h=unsigned(std::ceil(16*sy));
+                for(unsigned py=0;py<h;++py)for(unsigned px=0;px<w;++px) {
+                    const int x=ox+int(px),y=oy+int(py);
+                    if(x<0 || y<0 || x>=int(width) || y>=int(height))continue;
+                    if(!draw.clip.empty() && (draw.clip.size()!=256*192 || !draw.clip[size_t(y)*192/height*256+size_t(x)*256/width]))continue;
+                    const unsigned cell=std::min(15u,unsigned(py/sy))*16+std::min(15u,unsigned(px/sx));
+                    const unsigned role=(glyph.bitmap[cell/4]>>((cell%4)*2))&3;
+                    if(role)blend(pixels[size_t(y)*width+x],role==3?glyph.color:role==2?glyph.shadow:glyph.outline,255);
+                }
+                continue;
+            }
+            if(!font || !vector_text_enabled())continue;
+            const unsigned size=std::max(4u,unsigned(std::lround(glyph.em*sy)));
             auto key=std::make_pair(glyph.codepoint,size);
             auto it=cache.find(key);
             if(it==cache.end()) {
@@ -112,6 +136,8 @@ std::vector<uint32_t> render_text_layer(int screen, unsigned width, unsigned hei
                 for(unsigned y=0;y<coverage.height;++y) for(unsigned x=0;x<coverage.width;++x) {
                     int px=origin_x+int(x)+dx,py=origin_y+int(y)+dy;
                     if(px<0||py<0||px>=int(width)||py>=int(height))continue;
+                    if (!draw.clip.empty() && (draw.clip.size()!=256*192 ||
+                        !draw.clip[size_t(py)*192/height*256+size_t(px)*256/width]))continue;
                     blend(pixels[size_t(py)*width+px],color,coverage.alpha[y*coverage.width+x]);
                 }
             };

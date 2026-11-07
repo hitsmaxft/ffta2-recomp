@@ -13,8 +13,8 @@ ROMs, snapshots, captures and generated guest banks remain outside this reposito
 | Difficulty/language | Selection, opening, returning; first language entry | Chinese labels displayed; first slot reads Chinese |
 | Configuration rows | Four left labels and four right values; selection change; 180 idle VBlanks | Chinese vector text retained; no observed column collision; selected color follows the game |
 | Configuration closure | Close, return to main menu, enter inventory | No observed retained Chinese glyphs over the next screen |
-| Inventory categories | Edged weapons, bludgeons, ranged weapons, helms, armor, shields, items; wrap around | All opened, quantities and descriptions displayed; text remains English, so Chinese coverage FAILS |
-| Inventory navigation | Select another weapon; toggle equipment-job information; scroll consumables from Potion to Eye Drops | Input, scrolling, right quantity columns and descriptions worked; English text only |
+| Inventory categories | Edged weapons, bludgeons, ranged weapons, helms, armor, shields, items; wrap around | All opened; later widget integration displayed Chinese category and weapon names with original quantity columns; descriptions remain English |
+| Inventory navigation | Select another weapon; toggle equipment-job information; scroll consumables from Potion to Eye Drops | Input, scrolling, right quantity columns and descriptions worked; later Rod/White Staff capture confirms Chinese names without category overlap |
 | Unit overview | White Mage status, HP/MP, equipment, abilities, empty buff/debuff panel | Opened successfully; background text remains English, so Chinese coverage FAILS |
 
 Changing equipment/assigned abilities, shops, a full battle, save persistence,
@@ -41,11 +41,18 @@ Opening a character overview does not establish those gates.
 
 ## Remaining failures
 
-Inventory, unit overview and several battle labels use SUB-background tile text
-rather than the covered 3D text object path. The observer identifies matching
-resource IDs without changing tile ownership. A correct native integration must
-preserve BG scroll, clipping, palette generations, windows and layer priority.
-A screen-wide subtitle overlay would not satisfy this requirement.
+Inventory uses both SUB-background tile text and cached 3D widget textures.
+Supported 4bpp SUB labels now follow tile ownership, scrolling, windows and layer
+priority; unsupported blend modes retain original pixels. Cached widget positions
+come from submitted GPU polygons, because scratch object coordinates are reused
+across rows. The corrected Rod/White Staff capture shows separate Chinese category,
+item names and quantity columns. Palette-aware bitmap fallback is enabled by default.
+Descriptions, fixed atlas labels and several unit/battle surfaces still remain
+English. This is partial coverage, not a complete UI translation.
+
+An interactive save/load of the corrected inventory was exercised. A separate
+headless strict comparison failed its snapshot identity prerequisite and therefore
+only tested reset state; it is not inventory restoration evidence.
 
 Some help strings contain `sprite` or other layout-affecting control tokens;
 the current planner rejects these and retains the original rendering. A repeated

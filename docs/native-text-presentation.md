@@ -50,8 +50,8 @@ is intentionally unchanged. Title assets use an exact-source-byte runtime overri
 `tools/build_native_title_assets.py` and selected with `--title-assets`. The
 original atlas dimensions, rectangle table and five palette banks are preserved.
 These labels remain original-resolution artwork, separate from vector dialogue. Arbitrary scene occlusion, widescreen text transforms and
-full SUB-background font coverage need further validation. Windows and
-Linux backends are extension points, not verified builds.
+full SUB-background font coverage need further validation. Windows uses DirectWrite; see [Windows validation](windows-native.md). Linux
+font support remains an extension point.
 
 
 ## UI regression evidence
@@ -73,11 +73,17 @@ palettes, the right quantity/stat column, long names, scrolling, and menu closur
 
 The 3D list hook reserves the original right column and scrollbar gutter before
 accepting translated text. Unsupported or oversized lines retain their original
-rendering. SUB-background tile text is a separate path: diagnostics count matched
-but untranslated labels, without changing its tile ownership or GPU priorities.
-It is not covered by the 3D dialogue/list hook.
+rendering. SUB-background tile text has a separate ownership-aware path for supported 4bpp
+labels, respecting scroll, windows and layer priority. Unsupported rendering modes
+retain original pixels. Generic inventory widgets default to palette-aware bitmap
+Chinese; their final positions come from submitted GPU polygons.
 
 A power reset clears host text ownership. New snapshots serialize the native
 line plans and reconstruct visible text immediately on load, including cached
 menu objects. See [instant saves](native-savestates.md) for slot management,
 validation and the limitations of older snapshots without a native text section.
+
+Actual SDL presentation can be captured with the diagnostic `presentation_capture`
+request and an absolute, new `.bmp` output path, then polled with
+`presentation_capture_status`. Headless framebuffer composition is a separate
+diagnostic and is not proof of the final SDL presentation.

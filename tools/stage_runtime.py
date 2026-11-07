@@ -80,10 +80,10 @@ def stage(source,output):
         old='#if defined(NDS_ARM9_DYNARMIC)\n#include "arm9_native.h"\n#endif'
         if text.count(old)!=1:raise ValueError('Native diagnostics include guard failed')
         text = text.replace(old,'#include "arm9_native.h"')
-        text = '#include "ffta2/localization_runtime.h"\n#include "ffta2/guest_text.h"\n' + text
+        text = '#include "host/presentation_capture.h"\n#include "ffta2/localization_runtime.h"\n#include "ffta2/guest_text.h"\n' + text
         token = '    std::string cmd = json_str(line, "cmd");'
         if text.count(token) != 1: raise ValueError('Localization debug handler guard failed')
-        return text.replace(token, token + '\n    if (cmd == "localization_render_stats") return ffta2_text_status_json();\n    if (cmd == "localization_info") return ffta2::localization_info_json();\n    if (cmd == "localization_reload") return ffta2::reload_localization_json();')
+        return text.replace(token, token + '\n    if (cmd == "presentation_capture") return ffta2::host::request_presentation_capture(json_str(line,"path"));\n    if (cmd == "presentation_capture_status") return ffta2::host::presentation_capture_status();\n    if (cmd == "localization_render_stats") return ffta2_text_status_json();\n    if (cmd == "localization_info") return ffta2::localization_info_json();\n    if (cmd == "localization_reload") return ffta2::reload_localization_json();')
     def hd_debug(text):
         text=debug(text)
         text='#include "host/text_layer.h"\n#include "host/display_options.h"\n'+text
@@ -167,6 +167,21 @@ def stage(source,output):
 ''')
     def state_frontend(text):
         text=hd_frontend(text)
+        text='#include "host/presentation_capture.h"\n'+text
+        text=text.replace('void draw_savestate_notice(', r'''void capture_native_presentation(SDL_Renderer* renderer) {
+#if defined(NDS_HAVE_SDL3)
+    const auto path=ffta2::host::take_presentation_capture();
+    if(path.empty())return;
+    SDL_Surface* surface=SDL_RenderReadPixels(renderer,nullptr);
+    const bool ok=surface && SDL_SaveBMP(surface,path.c_str());
+    const std::string error=ok?std::string{}:SDL_GetError();
+    if(surface)SDL_DestroySurface(surface);
+    ffta2::host::finish_presentation_capture(ok,error);
+#endif
+}
+
+void draw_savestate_notice(''',1)
+        text=text.replace('SDL_RenderPresent(renderer);','capture_native_presentation(renderer);\n        SDL_RenderPresent(renderer);')
         def replace(old,new):
             nonlocal text
             if text.count(old)!=1: raise ValueError('State menu guard failed: '+old[:70])
@@ -243,9 +258,17 @@ bool save_runtime_mouse_sensitivity(''')
         return '#include <ctime>\n'+text
     adapt('runner/src/frontend.cpp',state_frontend)
     def hd_frames(text):
-        token='void nds_gpu2d_finish_frame(){'
-        if text.count(token)!=1: raise ValueError('Native text frame boundary guard failed')
-        return '#include "host/text_layer.h"\n'+text.replace(token,token+'\n    ffta2::host::publish_text_frame();')
+        def replace(old,new):
+            nonlocal text
+            if text.count(old)!=1: raise ValueError('Tile renderer guard failed: '+old[:70])
+            text=text.replace(old,new)
+        text='#include "host/text_layer.h"\n#include "host/tile_text.h"\n#include "ffta2/guest_text.h"\n'+text
+        replace('void nds_gpu2d_finish_frame(){\n    drain_pool(NDS_GPU2D_FENCE_FRAME);', 'void nds_gpu2d_finish_frame(){\n    drain_pool(NDS_GPU2D_FENCE_FRAME);\n    ffta2::host::publish_tile_text();\n    ffta2_text_publish_widgets();\n    ffta2::host::publish_text_frame();')
+        replace('void compose_line6(int engine, int y,', '#include "host/tile_text_gpu.inc"\n\nvoid compose_line6(int engine, int screen, int y,')
+        replace('            compose_line6(engine, y,', '            compose_line6(engine, job.screen[engine], y,')
+        replace('                       bg_lines[i]);\n    const uint8_t prio3d = static_cast<uint8_t>(u.bgcnt[0] & 3u);', '                       bg_lines[i]);\n    native_tile_line(engine,screen,y,u,palette,vram,bg_lines,bg_count,obj,obj_window.data());\n    const uint8_t prio3d = static_cast<uint8_t>(u.bgcnt[0] & 3u);')
+        replace('    const uint32_t mbmode=u.master_bright>>14;', '    native_tile_line(engine,job.screen[engine],y,u,palette,vram,bg_lines,bg_count,obj,nullptr);\n    const uint32_t mbmode=u.master_bright>>14;')
+        return text
     adapt('runner/src/gpu2d.cpp',hd_frames)
 
     def native_state(text):

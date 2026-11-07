@@ -1,13 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "host/font.h"
 #include "host/text_layer.h"
+#include "host/tile_text.h"
 #include "host/display_options.h"
 #include <cassert>
 #include <cstdlib>
 #include <algorithm>
 #include <cmath>
+namespace {
+void set_environment(const char* key,const char* value) {
+#ifdef _WIN32
+    _putenv_s(key,value);
+#else
+    setenv(key,value,1);
+#endif
+}
+}
 int main() {
-    setenv("FFTA2_FONT","system",1);
+    set_environment("FFTA2_FONT","system");
     auto font=ffta2::host::make_system_font();
     ffta2::host::GlyphCoverage small,large;
     assert(font->rasterize(U'暑',12,small));
@@ -44,11 +54,46 @@ int main() {
     assert(!ffta2::host::render_text_layer(1,1024,768).empty());
     ffta2::host::remove_text_owner(0x02001234);
     assert(ffta2::host::render_text_layer(1,1024,768).empty());
-    setenv("FFTA2_LCD","0.4",1);
+    // Native tile text is clipped by GPU visibility at logical-pixel bounds.
+    ffta2::host::TileText tile;tile.owner=0x02001234;tile.glyphs={{U'暑',0,0,0xffffffff}};
+    ffta2::host::set_tile_text(tile);
+    auto bindings=ffta2::host::tile_texts();assert(bindings->size()==1);
+    for(int y=30;y<46;++y) {
+        ffta2::host::TileTextSlice slice;slice.text=bindings->front();slice.x=20;slice.y=30;
+        slice.color=0xffffffff;slice.outline=0xff000000;
+        for(int x=20;x<26;++x)slice.visible[x]=255;
+        ffta2::host::tile_text_scanline(1,y,{slice});
+    }
+    ffta2::host::publish_tile_text();ffta2::host::publish_text_frame();
+    auto clipped=ffta2::host::render_text_layer(1,1024,768);
+    assert(std::any_of(clipped.begin(),clipped.end(),[](auto p){return p>>24;}));
+    for(int y=0;y<768;++y)for(int x=0;x<1024;++x)
+        if(x<80||x>=104||y<120||y>=184)assert(clipped[y*1024+x]==0);
+    auto saved=ffta2::host::snapshot_text_frame();
+    ffta2::host::clear_text_frames();
+    assert(ffta2::host::render_text_layer(1,1024,768).empty());
+    ffta2::host::restore_text_frame(saved);
+    assert(ffta2::host::render_text_layer(1,1024,768)==clipped);
+    ffta2::host::publish_tile_text();ffta2::host::publish_text_frame();
+    assert(ffta2::host::render_text_layer(1,1024,768).empty());
+    ffta2::host::remove_tile_text(tile.owner);
+    assert(ffta2::host::tile_texts()->empty());
+    assert(bindings->size()==1); // In-flight renderer snapshots retain their owner.
+    ffta2::host::clear_text_frames();
+    ffta2::host::TextGlyph pixel{U'暑',0,0,0xffff0000,0xff00ff00};
+    pixel.pixel=true;pixel.shadow=0xff0000ff;pixel.bitmap[0]=1|(2<<2)|(3<<4);
+    ffta2::host::submit_text({0,{pixel}});ffta2::host::publish_text_frame();
+    auto bitmap=ffta2::host::render_text_layer(0,1024,768);
+    assert(bitmap[0]==0xff00ff00 && bitmap[4]==0xff0000ff && bitmap[8]==0xffff0000);
+    assert(bitmap[3]==bitmap[0] && bitmap[12]==0); // Exact nearest-neighbor roles.
+    auto bitmap_state=ffta2::host::snapshot_text_frame();ffta2::host::clear_text_frames();
+    ffta2::host::restore_text_frame(bitmap_state);
+    assert(ffta2::host::render_text_layer(0,1024,768)==bitmap);
+    set_environment("FFTA2_LCD","0.4");
     auto mask=ffta2::host::lcd_mask(1024,768);
     assert(mask.size()==1024*768);
     assert(mask[0]!=mask[2*1024+2]);
     assert(ffta2::host::lcd_mask(256,192).empty());
-    setenv("FFTA2_LCD","nan",1);
+    set_environment("FFTA2_LCD","nan");
     assert(ffta2::host::lcd_mask(1024,768).empty());
 }

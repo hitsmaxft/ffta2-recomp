@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "localization_runtime.h"
-#include <CommonCrypto/CommonDigest.h>
+#include "host/digest.h"
 #include <cstdio>
 
 namespace ffta2 {
@@ -23,8 +23,7 @@ bool initialize_localization(const std::string& directory, const uint8_t* rom,
     if (!rom || !rom_size || rom_size > UINT32_MAX) {
         error = "Localization requires the original ROM"; return false;
     }
-    unsigned char digest[CC_SHA256_DIGEST_LENGTH];
-    CC_SHA256(rom, static_cast<CC_LONG>(rom_size), digest);
+    const auto digest=host::sha256(rom,rom_size);
     constexpr char hex[] = "0123456789abcdef";
     std::string identity;
     for (unsigned char c : digest) { identity += hex[c >> 4]; identity += hex[c & 15]; }

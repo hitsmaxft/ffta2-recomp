@@ -1,0 +1,34 @@
+name: Windows host validation
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  host:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Configure Windows host without retail assets
+        run: cmake -S . -B build/windows-host -DFFTA2_HOST_ONLY=ON -A x64
+      - name: Build DirectWrite, text layout and integrity checks
+        run: cmake --build build/windows-host --config Release --parallel 3
+      - name: Obtain open CJK font when system Chinese fonts are unavailable
+        shell: pwsh
+        run: |
+          $candidates = @('msyh.ttc', 'msyh.ttf', 'simhei.ttf', 'Deng.ttf')
+          $found = $candidates | Where-Object { Test-Path (Join-Path $env:WINDIR "Fonts/$_") }
+          if (-not $found) {
+            python tools/fetch_wqy_font.py --output build/fonts
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            "FFTA2_FONT_FILE=$((Resolve-Path build/fonts/wqy-zenhei/wqy-zenhei.ttc).Path)" >> $env:GITHUB_ENV
+          }
+      - name: Run native Windows tests
+        run: ctest --test-dir build/windows-host -C Release --output-on-failure
+      - name: Preserve test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-host-test-logs
+          path: build/windows-host/Testing/Temporary/*.log
